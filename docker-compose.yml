@@ -1,13 +1,13 @@
 version: '3.8'
 services:
-  backend:
+  back:
     build:
-      context: ./backend
+      context: ./back
       dockerfile: Dockerfile
     ports:
       - "5000:5000"
     depends_on:
-      database:
+      db:
         condition: service_healthy
     environment:
       DATABASE_HOST: ${DATABASE_HOST} 
@@ -18,21 +18,20 @@ services:
       FLASK_APP: ${FLASK_APP}
       FLASK_ENV: ${FLASK_ENV}
     volumes:
-      - ./backend/migrations:/app/migrations
-      - ./backend/public/images:/app/public/images
+      - ./back:/app
 
-  frontend:
+  front:
     build:
-      context: ./frontend
+      context: ./front
       dockerfile: Dockerfile
     ports:
       - "3000:3000"
     depends_on:
-      - backend
+      - back
 
-  database:
+  db:
     image: mysql:8.0 
-    container_name: fitness_tracker_mysql
+    container_name: jake_weather_mysql
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}   
@@ -41,14 +40,13 @@ services:
     ports:
       - "3306:3306"
     volumes:
+      - ./db:/docker-entrypoint-initdb.d
       - db_data:/var/lib/mysql
-      - ./database:/docker-entrypoint-initdb.d
     healthcheck: 
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "${MYSQL_USER}", "-p${MYSQL_PASSWORD}"]
       interval: 10s
       timeout: 10s
       retries: 5
       start_period: 90s
-
 volumes:
   db_data:

@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS `jake_weather`.`user` (
   `fname` VARCHAR(45) NOT NULL,
   `lname` VARCHAR(45) NOT NULL,
   `email` VARCHAR(45) NOT NULL,
-  `password` VARCHAR(20) NOT NULL,
+  `password` VARCHAR(255) NOT NULL,
   `country` VARCHAR(45) NOT NULL,
   `city` VARCHAR(45) NOT NULL,
   `state` CHAR(2) NOT NULL,
@@ -47,6 +47,9 @@ CREATE TABLE IF NOT EXISTS `jake_weather`.`favlocations` (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
+
+INSERT INTO `jake_weather`.`user` (`username`, `fname`, `lname`, `email`, `password`, `country`, `city`, `state`, `zip`) VALUES 
+('alexryse', 'alex', 'ryse', 'alexryse@email.com', 'alexryse', 'USA', 'Ellensburg', 'WA', '98926');
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;

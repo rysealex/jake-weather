@@ -39,9 +39,9 @@ def add_user():
     # hash the password before storing in jake weather db
     hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
 
-    user_id = user_model.add_user(username, fname, lname, email, hashed_password, country, city, state, zip)
+    userid = user_model.add_user(username, fname, lname, email, hashed_password, country, city, state, zip)
 
-    if user_id:
-        return jsonify({"message": "User added successfully", "user_id": user_id}), 201
+    if userid:
+        return jsonify({"message": "User added successfully", "userid": userid}), 201
     else:
         return jsonify({"error": "Failed to add user"}), 500

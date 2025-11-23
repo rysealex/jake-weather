@@ -55,3 +55,27 @@ class UserModel:
                 cursor.close()
             if conn:
                 conn.close()
+
+    """Function to check if a user exists in the jake weather database"""
+    def user_exists(self, username):
+        conn = None
+        cursor = None
+        try:
+            conn = get_db_connection()
+            cursor = conn.cursor()
+
+            sql = """
+            SELECT COUNT(*) FROM user WHERE username = %s
+            """
+
+            cursor.execute(sql, (username,))
+            result = cursor.fetchone()
+            return result[0] > 0
+        except Error as e:
+            print(f"Error checking user existence: {e}")
+            return False
+        finally:
+            if cursor:
+                cursor.close()
+            if conn:
+                conn.close()

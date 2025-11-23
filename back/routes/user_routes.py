@@ -45,3 +45,9 @@ def add_user():
         return jsonify({"message": "User added successfully", "userid": userid}), 201
     else:
         return jsonify({"error": "Failed to add user"}), 500
+    
+@user_bp.route('/exists/<username>', methods=['GET'])
+def check_user_exists(username):
+    """Endpoint to check if a user exists"""
+    exists = user_model.user_exists(username)
+    return jsonify({"exists": exists}), 200

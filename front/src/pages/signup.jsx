@@ -24,8 +24,23 @@ function Signup() {
     
     // provide input validation here
 
-    // proceed to login with API call
+    // proceed to signup with API calls
     try {
+			// step 1: check if the user already exists
+			const existsResponse = await fetch(`http://localhost:5000/user/exists/${username}`, {
+				method: 'GET',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+			});
+			const existsData = await existsResponse.json();
+			// check if user exists
+			if (existsData.exists) {
+				console.log('User already exists');
+				return;
+			}
+
+			// step 2: create the user
       const response = await fetch('http://localhost:5000/user/add', {
         method: 'POST',
         headers: {

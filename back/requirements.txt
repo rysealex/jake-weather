@@ -4,6 +4,5 @@ mysql-connector-python
 bcrypt
 PyJWT
 gunicorn
-Flask-SQLAlchemy
 Flask-CORS
 pymysql

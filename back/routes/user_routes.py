@@ -47,7 +47,28 @@ def add_user():
         return jsonify({"error": "Failed to add user"}), 500
     
 @user_bp.route('/exists/<username>', methods=['GET'])
-def check_user_exists(username):
-    """Endpoint to check if a user exists"""
-    exists = user_model.user_exists(username)
+def check_username_exists(username):
+    """Endpoint to check if a user's username exists"""
+    exists = user_model.username_exists(username)
     return jsonify({"exists": exists}), 200
+
+@user_bp.route('/login', methods=['POST'])
+def login_user():
+    """Endpoint to login a user"""
+    data = request.get_json()
+
+    if not data:
+        return jsonify({"error": "No input data provided"}), 400
+
+    username = data.get('username')
+    password = data.get('password')
+
+    if not username or not password:
+        return jsonify({"error": "Username and password are required"}), 400
+
+    userid = user_model.user_exists(username, password)
+
+    if userid:
+        return jsonify({"message": "Login successful", "userid": userid}), 200
+    else:
+        return jsonify({"error": "Invalid username or password"}), 500

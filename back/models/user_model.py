@@ -1,3 +1,4 @@
+import bcrypt
 from mysql.connector import Error
 from db_connection import get_db_connection
 
@@ -56,8 +57,8 @@ class UserModel:
             if conn:
                 conn.close()
 
-    """Function to check if a user exists in the jake weather database"""
-    def user_exists(self, username):
+    """Function to check if a user's username exists in the jake weather database"""
+    def username_exists(self, username):
         conn = None
         cursor = None
         try:
@@ -72,7 +73,33 @@ class UserModel:
             result = cursor.fetchone()
             return result[0] > 0
         except Error as e:
-            print(f"Error checking user existence: {e}")
+            print(f"Error checking username existence: {e}")
+            return False
+        finally:
+            if cursor:
+                cursor.close()
+            if conn:
+                conn.close()
+
+    """Function to check if a user exists in the jake weather database"""
+    def user_exists(self, username, password):
+        conn = None
+        cursor = None
+        try:
+            conn = get_db_connection()
+            cursor = conn.cursor(dictionary=True)
+
+            sql = """
+            SELECT * FROM user WHERE username = %s
+            """
+            cursor.execute(sql, (username,))
+            user = cursor.fetchone()
+            # check if password matches the hashed password in the jake weather database
+            if user and bcrypt.checkpw(password.encode('utf-8'), user['password'].encode('utf-8')):
+                return user['userid']
+            return None
+        except Error as e:
+            print(f"Error checking if user exists: {e}")
             return False
         finally:
             if cursor:

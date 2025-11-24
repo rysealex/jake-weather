@@ -52,8 +52,6 @@ function Signup() {
       if (response.ok) {
         const data = await response.json();
         console.log('Signup successful:', data);
-        // store the user id in local storage
-        localStorage.setItem('userid', data.userid);
 				// navigate to login page
         handleNavigate("/");
       } else {

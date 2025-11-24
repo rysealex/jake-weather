@@ -106,3 +106,26 @@ class UserModel:
                 cursor.close()
             if conn:
                 conn.close()
+
+    """Function to get a user by userid"""
+    def get_user_by_id(self, userid):
+        conn = None
+        cursor = None
+        try:
+            conn = get_db_connection()
+            cursor = conn.cursor(dictionary=True)
+
+            sql = """
+            SELECT * FROM user WHERE userid = %s
+            """
+            cursor.execute(sql, (userid,))
+            user = cursor.fetchone()
+            return user
+        except Error as e:
+            print(f"Error fetching user by userid: {e}")
+            return None
+        finally:
+            if cursor:
+                cursor.close()
+            if conn:
+                conn.close()

@@ -72,3 +72,12 @@ def login_user():
         return jsonify({"message": "Login successful", "userid": userid}), 200
     else:
         return jsonify({"error": "Invalid username or password"}), 500
+    
+@user_bp.route('/<int:userid>', methods=['GET'])
+def get_user(userid):
+    """Endpoint to get a user by userid"""
+    user = user_model.get_user_by_id(userid)
+    if user:
+        return jsonify(user), 200
+    else:
+        return jsonify({"error": "User not found"}), 404

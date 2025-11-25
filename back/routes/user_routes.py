@@ -49,8 +49,8 @@ def add_user():
 @user_bp.route('/exists/<username>', methods=['GET'])
 def check_username_exists(username):
     """Endpoint to check if a user's username exists"""
-    exists = user_model.username_exists(username)
-    return jsonify({"exists": exists}), 200
+    userid = user_model.username_exists(username)
+    return jsonify({"exists": userid is not None, "userid": userid}), 200
 
 @user_bp.route('/login', methods=['POST'])
 def login_user():
@@ -81,3 +81,36 @@ def get_user(userid):
         return jsonify(user), 200
     else:
         return jsonify({"error": "User not found"}), 404
+    
+@user_bp.route('/diffpass/<int:userid>', methods=['POST'])
+def check_different_password(userid):
+    """Endpoint to check if a user's current password is different from the updated password"""
+    data = request.get_json()
+
+    new_password = data.get('new_password')
+
+    if not new_password:
+        return jsonify({"error": "New password is required"}), 400
+
+    different = user_model.different_password(userid, new_password)
+    return jsonify({"different": different}), 200
+
+@user_bp.route('/updatepass/<int:userid>', methods=['PUT'])
+def update_user_password(userid):
+    """Endpoint to update a user's password"""
+    data = request.get_json()
+
+    new_password = data.get('new_password')
+
+    if not new_password:
+        return jsonify({"error": "New password is required"}), 400
+
+    # hash the new password before storing in jake weather db
+    hashed_password = bcrypt.hashpw(new_password.encode('utf-8'), bcrypt.gensalt())
+
+    success = user_model.update_password(userid, hashed_password)
+
+    if success:
+        return jsonify({"message": "Password updated successfully"}), 200
+    else:
+        return jsonify({"error": "Failed to update password"}), 500

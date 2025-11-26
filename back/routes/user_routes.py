@@ -71,7 +71,7 @@ def login_user():
     if userid:
         return jsonify({"message": "Login successful", "userid": userid}), 200
     else:
-        return jsonify({"error": "Invalid username or password"}), 500
+        return jsonify({"error": "Account not found with provided credentials"}), 500
     
 @user_bp.route('/<int:userid>', methods=['GET'])
 def get_user(userid):

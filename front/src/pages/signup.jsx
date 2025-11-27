@@ -180,7 +180,7 @@ function Signup() {
 			setState("");
 			setZip("");
 			usernameInputRef.current.focus();
-      setGeneralError('Error during signup:', error);
+      setGeneralError('Error during signup', error);
     }
 	};
 

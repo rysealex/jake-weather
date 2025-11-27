@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 function ForgotPassword() {
@@ -12,11 +12,80 @@ function ForgotPassword() {
 	const [password, setPassword] = useState('');
 	const [confirmPassword, setConfirmPassword] = useState('');
 
+	// useState hooks for error handling
+	const [usernameError, setUsernameError] = useState('');
+	const [passwordError, setPasswordError] = useState('');
+	const [confirmPasswordError, setConfirmPasswordError] = useState('');
+	const [generalError, setGeneralError] = useState('');
+
+	// useState hook for success message
+	const [successMessage, setSuccessMessage] = useState('');
+
+	// refs for login input fields
+	const usernameInputRef = useRef(null);
+	const passwordInputRef = useRef(null);
+	const confirmPasswordInputRef = useRef(null);
+
+	// password complexity regex
+	const passwordRegex = /^(?=.*[A-Z])(?=.*[0-9])(?=.*[^a-zA-Z0-9\s]).*$/;
+
 	// handle the password reset attempt
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 	
+		// clear previous errors and success message
+		setUsernameError("");
+		setPasswordError("");
+		setConfirmPasswordError("");
+		setGeneralError("");
+		setSuccessMessage("");
+
+		let hasError = false;
+
 		// provide input validation here
+		if (!username) {
+			setUsernameError('Username is required');
+			hasError = true;
+			usernameInputRef.current.focus();
+		}
+		else if (username.length < 5) {
+			setUsernameError('Username must be at least 5 characters long');
+			hasError = true;
+			usernameInputRef.current.focus();
+		}
+		else if (username.length > 40) {
+			setUsernameError('Username must be at most 40 characters long');
+			hasError = true;
+			usernameInputRef.current.focus();
+		}
+		else if (!password) {
+			setPasswordError('Password is required');
+			hasError = true;
+			passwordInputRef.current.focus();
+		}
+		else if (password.length < 5) {
+			setPasswordError('Password must be at least 5 characters long');
+			hasError = true;
+			passwordInputRef.current.focus();
+		}
+		else if (password.length > 20) {
+			setPasswordError('Password must be at most 20 characters long');
+			hasError = true;
+			passwordInputRef.current.focus();
+		}
+		else if (passwordRegex.test(password) === false) {
+			setPasswordError('Password must contain at least one special character, one capital letter, and one number');
+			hasError = true;
+			passwordInputRef.current.focus();
+		}
+		else if (password !== confirmPassword) {
+			setConfirmPasswordError('Password and Confirm Password do not match');
+			hasError = true;
+			confirmPasswordInputRef.current.focus();
+		}
+		if (hasError) {
+			return; // stop if there are validation errors
+		}
 
 		// proceed to reset password with API calls
 		try {
@@ -29,7 +98,7 @@ function ForgotPassword() {
 			});
 			// handle 500 errors from the back
 			if (!existsResponse.ok) {
-				console.error('Server error while checking username existence');
+				setGeneralError('Server error while checking username existence');
 				return;
 			}
 
@@ -37,7 +106,7 @@ function ForgotPassword() {
 
 			// check if user does not exist
 			if (!existsData.exists) {
-				console.log('User does not exist with this username:', username);
+				setGeneralError('User account does not exist');
 				return;
 			}
 			// get userid from response
@@ -53,7 +122,7 @@ function ForgotPassword() {
 			});
 			// handle 500 errors from the back
 			if (!diffpassResponse.ok) {
-				console.error('Server error while checking different password');
+				setGeneralError('Server error while checking different password');
 				return;
 			}
 
@@ -61,7 +130,7 @@ function ForgotPassword() {
 
 			// check if the new password is different
 			if (!diffpassData.different) {
-				console.log('New password must be different from the old password');
+				setGeneralError('New password must be different from the old password');
 				return;
 			}
 
@@ -75,21 +144,28 @@ function ForgotPassword() {
 			});
 			// check if the response is ok
 			if (updatepassResponse.ok) {
-				console.log('Password reset successful');
-				// navigate to login page
-				handleNavigate("/");
+				setUsername("");
+				setPassword("");
+				setConfirmPassword("");
+				setSuccessMessage('Password reset successful! Redirecting to login page...');
+				// navigate to login page after a short delay
+				setTimeout(() => {
+					handleNavigate("/");
+				}, 4000);
 			} else {
 				setUsername("");
 				setPassword("");
 				setConfirmPassword("");
+				usernameInputRef.current.focus();
 				const errorData = await updatepassResponse.json();
-				console.error('Password reset failed:', errorData.error);
+				setGeneralError(errorData.error || 'Failed to update password');
 			}
 		} catch (error) {
 			setUsername("");
 			setPassword("");
 			setConfirmPassword("");
-			console.error('Error during password reset:', error);
+			usernameInputRef.current.focus();
+			setGeneralError('Error during password reset');
 		}
 	};
 
@@ -97,9 +173,14 @@ function ForgotPassword() {
 		<div>
 			<h1>Forgot Password Page</h1>
 			<form onSubmit={handleSubmit}>
-				<input type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} required />
-				<input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required />
-				<input type="password" placeholder="Confirm Password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required />
+				<input type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} required ref={usernameInputRef}/>
+				{usernameError && <p>{usernameError}</p>}
+				<input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required ref={passwordInputRef}/>
+				{passwordError && <p>{passwordError}</p>}
+				<input type="password" placeholder="Confirm Password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required ref={confirmPasswordInputRef}/>
+				{confirmPasswordError && <p>{confirmPasswordError}</p>}
+				{generalError && <p>{generalError}</p>}
+				{successMessage && <p>{successMessage}</p>}
 				<button type="submit">Reset Password</button>
 			</form>
 		</div>

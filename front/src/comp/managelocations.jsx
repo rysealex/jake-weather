@@ -180,6 +180,119 @@ function Managelocations() {
 		}
 	};
 
+	// handle editing a location
+	const handleEditLocation = async (e) => {
+		e.preventDefault();
+
+		// clear previous errors and success message
+		setCityError("");
+		setStateError("");
+		setCountryError("");
+		setZipError("");
+		setGeneralError("");
+		setSuccessMessage("");
+		
+		// get the locationid from the selected location
+		const locationid = 4;
+
+		let hasError = false;
+
+		// provide input validation here
+		if (!city) {
+			setCityError('City is required');
+			hasError = true;
+			cityInputRef.current.focus();
+		}
+		else if (!lettersOnlyRegex.test(city)) {
+			setCityError('City must contain only letters and spaces');
+			hasError = true;
+			cityInputRef.current.focus();
+		}
+		else if (!state) {
+			setStateError('State is required');
+			hasError = true;
+			stateInputRef.current.focus();
+		}
+		else if (state.length !== 2) {
+			setStateError('State must be 2 characters long');
+			hasError = true;
+			stateInputRef.current.focus();
+		}
+		else if (!country) {
+			setCountryError('Country is required');
+			hasError = true;
+			countryInputRef.current.focus();
+		}
+		else if (!lettersOnlyRegex.test(country)) {
+			setCountryError('Country must contain only letters and spaces');
+			hasError = true;
+			countryInputRef.current.focus();
+		}
+		else if (!zip) {
+			setZipError('Zip is required');
+			hasError = true;
+			zipInputRef.current.focus();
+		}
+		else if (zip.length !== 5) {
+			setZipError('Zip must be 5 characters long');
+			hasError = true;
+			zipInputRef.current.focus();
+		}
+		else if (isNaN(zip)) {
+			setZipError('Zip must be a number');
+			hasError = true;
+			zipInputRef.current.focus();
+		}
+		if (hasError) {
+			return; // stop if there are validation errors
+		}
+
+		// proceed to delete location with API calls
+		try {
+			// step 1: get the latitude and longitude from the location data
+			const latitude = 30.2672;
+			const longitude = 97.7431;
+
+			// step 2: edit the favorite location
+			const ediResponse = await fetch(`http://localhost:5000/favlocations/edit/${locationid}`, {
+				method: 'PUT',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({ latitude, longitude, city, state, country, zip }),
+			});
+			// check if response is ok
+			if (ediResponse.ok) {
+				setCity('');
+				setState('');
+				setCountry('');
+				setZip('');
+				// show success message for a short duration
+				setSuccessMessage('Favorite location edited successfully');
+				setTimeout(() => {
+					setSuccessMessage('');
+				}, 4000);
+				const editData = await ediResponse.json();
+				console.log('Favorite location edited successfully:', editData);
+			} else {
+				setCity('');
+				setState('');
+				setCountry('');
+				setZip('');
+				cityInputRef.current.focus();
+				const errorData = await ediResponse.json();
+				setGeneralError(errorData.error || 'Failed to edit favorite location');
+			}
+		} catch (error) {
+			setCity('');
+			setState('');
+			setCountry('');
+			setZip('');
+			cityInputRef.current.focus();
+			setGeneralError('Error editing favorite location', error);
+		}
+	};
+
 	return(
 		<div>
 			<h1>Manage Locations</h1>
@@ -197,6 +310,7 @@ function Managelocations() {
 				{successMessage && <p className="success">{successMessage}</p>}
 				<button type="submit">Add Location</button>
 				<button onClick={handleDeleteLocation}>Delete Location</button>
+				<button onClick={handleEditLocation}>Edit Location</button>
 			</form>
 		</div>
 	);

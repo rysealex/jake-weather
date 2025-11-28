@@ -6,3 +6,8 @@ PyJWT
 gunicorn
 Flask-CORS
 pymysql
+openmeteo-requests
+pandas
+requests-cache
+retry-requests
+numpy

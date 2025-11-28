@@ -147,6 +147,39 @@ function Managelocations() {
 		}
 	};
 
+	// handle deleting a location
+	const handleDeleteLocation = async (e) => {
+		e.preventDefault();
+		
+		// get the locationid from the selected location
+		const locationid = 3;
+
+		// proceed to delete location with API calls
+		try {
+			const deleteResponse = await fetch(`http://localhost:5000/favlocations/delete/${locationid}`, {
+				method: 'DELETE',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+			});
+			// check if response is ok
+			if (deleteResponse.ok) {
+				// show success message for a short duration
+				setSuccessMessage('Favorite location deleted successfully');
+				setTimeout(() => {
+					setSuccessMessage('');
+				}, 4000);
+				const deleteData = await deleteResponse.json();
+				console.log('Favorite location deleted successfully:', deleteData);
+			} else {
+				const errorData = await deleteResponse.json();
+				setGeneralError(errorData.error || 'Failed to delete favorite location');
+			}
+		} catch (error) {
+			setGeneralError('Error deleting favorite location', error);
+		}
+	};
+
 	return(
 		<div>
 			<h1>Manage Locations</h1>
@@ -163,6 +196,7 @@ function Managelocations() {
 				{generalError && <p className="error">{generalError}</p>}
 				{successMessage && <p className="success">{successMessage}</p>}
 				<button type="submit">Add Location</button>
+				<button onClick={handleDeleteLocation}>Delete Location</button>
 			</form>
 		</div>
 	);

@@ -71,7 +71,12 @@ class FavlocationsModel:
 
             cursor.execute(sql, (latitude, longitude, city, state, country, zip, locationid))
             conn.commit()
-            return cursor.lastrowid # Return the locationid of the edited location
+            
+            # Check if any row was actually updated
+            if cursor.rowcount > 0:
+                return locationid
+            else:
+                return None
         except Error as e:
             print(f"Error editing favorite location: {e}")
             if conn:

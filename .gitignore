@@ -1,2 +1,4 @@
 .env
 back/__pycache__/
+back/models/__pycache__/
+back/routes/__pycache__/

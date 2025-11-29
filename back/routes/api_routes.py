@@ -12,19 +12,16 @@ api_bp = Blueprint('api', __name__, url_prefix='/api')
 
 load_dotenv(os.path.join(os.path.dirname(__file__), "..", ".env"))
 
-
 @api_bp.route("/weather-data", methods=['GET'])
 def get_weather_data():
-    # Read query parameters
 
+    # Read query parameters
     cache_session = requests_cache.CachedSession('.cache', expire_after = 3600)
     retry_session = retry(cache_session, retries = 5, backoff_factor = 0.2)
     openmeteo = openmeteo_requests.Client(session = retry_session)
-
     current_time = None
 
-    #Returns the row of hourly_df closest to the current hour but not in the future.
-
+    # Returns the row of hourly_df closest to the current hour but not in the future.
     if current_time is None:
         current_time = datetime.now(ZoneInfo("America/Los_Angeles"))  # Use UTC to match Open-Meteo timestamps
 
@@ -74,11 +71,9 @@ def get_weather_data():
                 closest_row = candidate_rows.iloc[-1]
                 closest_row['date'] = closest_row['date'].strftime('%Y-%m-%d %H:%M:%S %Z')
                 weekly_closest.append(closest_row.to_dict())
-        
 
         if not weekly_closest:
             return jsonify({"error" : "Cannot find current time"}), 500
-
     
         return jsonify({
             "latitude": response.Latitude(),
@@ -87,8 +82,6 @@ def get_weather_data():
             "utc_offset_seconds": response.UtcOffsetSeconds(),
             "weekly": weekly_closest,
         })
-    
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-        

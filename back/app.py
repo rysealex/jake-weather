@@ -2,6 +2,7 @@ from flask import Flask, jsonify
 from flask_cors import CORS
 import db_connection
 from routes.user_routes import user_bp
+from routes.api_routes import api_bp
 
 # initialize the database connection pool
 db_connection.init_db_pool()
@@ -15,6 +16,7 @@ def create_app():
 
     # register blueprints here
     app.register_blueprint(user_bp)
+    app.register_blueprint(api_bp)
 
     @app.route('/')
     def home():

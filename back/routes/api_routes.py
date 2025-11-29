@@ -5,16 +5,21 @@ import requests_cache
 from retry_requests import retry
 from datetime import datetime, timezone, timedelta
 from zoneinfo import ZoneInfo 
+import os
+from dotenv import load_dotenv
 
 api_bp = Blueprint('api', __name__, url_prefix='/api')
+
+load_dotenv(os.path.join(os.path.dirname(__file__), "..", ".env"))
+
 
 @api_bp.route("/weather-data", methods=['GET'])
 def get_weather_data():
     # Read query parameters
 
     cache_session = requests_cache.CachedSession('.cache', expire_after = 3600)
-    retry_ression = retry(cache_session, retries = 5, backoff_factor = 0.2)
-    openmeteo = openmeteo_requests.Client(session = retry_ression)
+    retry_session = retry(cache_session, retries = 5, backoff_factor = 0.2)
+    openmeteo = openmeteo_requests.Client(session = retry_session)
 
     current_time = None
 
@@ -23,7 +28,7 @@ def get_weather_data():
     if current_time is None:
         current_time = datetime.now(ZoneInfo("America/Los_Angeles"))  # Use UTC to match Open-Meteo timestamps
 
-    url = "https://api.open-meteo.com/v1/forecast"
+    url = os.getenv('OPEN_METEO_URL')
 
     params = {
         "latitude": 46.9965,
@@ -54,7 +59,6 @@ def get_weather_data():
         }
 
         df = pd.DataFrame(hourly_data)
-
         
         weekly_closest = []
         for i in range(7):
@@ -81,7 +85,6 @@ def get_weather_data():
             "longitude": response.Longitude(),
             "elevation": response.Elevation(),
             "utc_offset_seconds": response.UtcOffsetSeconds(),
-            #"horly": df.to_dict(),
             "weekly": weekly_closest,
         })
     

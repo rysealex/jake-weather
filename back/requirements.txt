@@ -11,3 +11,4 @@ pandas
 requests-cache
 retry-requests
 numpy
+python-dotenv

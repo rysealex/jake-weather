@@ -1,2 +1,4 @@
 .env
 back/__pycache__/
+back/.cache.sqlite
+back/routes/__pycache__/

@@ -2,7 +2,11 @@ from flask import Flask, jsonify
 from flask_cors import CORS
 import db_connection
 from routes.user_routes import user_bp
+<<<<<<< HEAD
 from routes.api_routes import api_bp
+=======
+from routes.favlocations_routes import favlocations_bp
+>>>>>>> cc0431b1d5460a3a4de2b1d565e4e86e84b8bfff
 
 # initialize the database connection pool
 db_connection.init_db_pool()
@@ -16,7 +20,11 @@ def create_app():
 
     # register blueprints here
     app.register_blueprint(user_bp)
+<<<<<<< HEAD
     app.register_blueprint(api_bp)
+=======
+    app.register_blueprint(favlocations_bp)
+>>>>>>> cc0431b1d5460a3a4de2b1d565e4e86e84b8bfff
 
     @app.route('/')
     def home():

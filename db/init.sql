@@ -51,6 +51,11 @@ ENGINE = InnoDB;
 INSERT INTO `jake_weather`.`user` (`username`, `fname`, `lname`, `email`, `password`, `country`, `city`, `state`, `zip`) VALUES 
 ('alexryse', 'alex', 'ryse', 'alexryse@email.com', 'alexryse', 'USA', 'Ellensburg', 'WA', '98926');
 
+INSERT INTO `jake_weather`.`favlocations` (`userid`, `latitude`, `longitude`, `city`, `state`, `country`, `zip`) VALUES 
+(2, 47.0038, -120.549, 'Ellensburg', 'WA', 'USA', '98926'),
+(2, 34.0522, -118.2437, 'Los Angeles', 'CA', 'USA', '90001'),
+(2, 40.7128, -74.0060, 'New York', 'NY', 'USA', '10001');
+
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;

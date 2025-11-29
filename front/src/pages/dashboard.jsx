@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import Favlocations from '../comp/favlocations';
 
 function Dashboard() {
 	// useEffect to fetch user data on component mount
@@ -47,7 +48,7 @@ function Dashboard() {
 
 
 
-
+			<Favlocations />
 		</div>
 	);
 };

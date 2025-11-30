@@ -12,6 +12,8 @@ function Weathermap() {
 
 	// useEffect to fetch user's geolocation
 	useEffect(() => {
+		console.log("API Key:", process.env.REACT_APP_GOOGLE_MAPS_API_KEY);
+		console.log("MAP ID:", process.env.REACT_APP_GOOGLE_MAPS_MAP_ID);
 		if (navigator.geolocation) {
 			navigator.geolocation.getCurrentPosition(
 				(position) => {
@@ -39,11 +41,11 @@ function Weathermap() {
 						Error fetching geolocation: {geolocationError}
 					</div>
 				)}
-				<APIProvider apiKey={process.env.GOOGLE_MAPS_API_KEY}>
+				<APIProvider apiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}>
 					<Map
 						defaultCenter={userPos || mapPos}
 						defaultZoom={15}
-						mapId={process.env.GOOGLE_MAPS_MAP_ID}
+						mapId={process.env.REACT_APP_GOOGLE_MAPS_MAP_ID}
 					>
 						{userPos && (
 							<AdvancedMarker

@@ -86,6 +86,8 @@ function Login() {
 			});
 			// check if the response is ok
       if (response.ok) {
+				setUsername("");
+        setPassword("");
         const userid = await response.json();
         console.log('Login successful:', userid);
         // store the user id in local storage

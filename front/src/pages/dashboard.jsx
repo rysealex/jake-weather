@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import Managelocations from '../comp/managelocations';
 import Weathermap from '../comp/weathermap';
+import Weeklyweatherdata from '../comp/weeklyweatherdata';
 
 function Dashboard() {
 	// useEffect to fetch user data on component mount
@@ -51,6 +52,7 @@ function Dashboard() {
 
 			<Managelocations />
 			<Weathermap />
+			<Weeklyweatherdata />
 		</div>
 	);
 };

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { APIProvider, Map, AdvancedMarker } from '@vis.gl/react-google-maps';
+import { APIProvider, Map, AdvancedMarker, MapControl, ControlPosition } from '@vis.gl/react-google-maps';
+import AutocompleteInput from './autocompleteinput.jsx';
 
 function Weathermap() {
 
@@ -39,12 +40,19 @@ function Weathermap() {
 						Error fetching geolocation: {geolocationError}
 					</div>
 				)}
-				<APIProvider apiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}>
+				<APIProvider 
+					apiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
+					libraries={['places']}
+				>
 					<Map
 						defaultCenter={userPos || mapPos}
 						defaultZoom={15}
 						mapId={process.env.REACT_APP_GOOGLE_MAPS_MAP_ID}
+						disableDefaultUI={true}
 					>
+						<MapControl position={ControlPosition.TOP_RIGHT}>
+							<AutocompleteInput />
+						</MapControl>
 						{userPos && (
 							<AdvancedMarker
 								position={userPos}

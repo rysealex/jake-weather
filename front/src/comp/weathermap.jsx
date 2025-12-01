@@ -1,6 +1,9 @@
 import { useState, useEffect } from 'react';
 import { APIProvider, Map, AdvancedMarker, MapControl, ControlPosition } from '@vis.gl/react-google-maps';
-import AutocompleteInput from './autocompleteinput.jsx';
+import Autocompleteinput from './autocompleteinput.jsx';
+import Openweatherlayer from './openweatherlayer.jsx';
+
+const WEATHER_LAYER = 'wind_new';
 
 function Weathermap() {
 
@@ -51,8 +54,11 @@ function Weathermap() {
 						disableDefaultUI={true}
 					>
 						<MapControl position={ControlPosition.TOP_RIGHT}>
-							<AutocompleteInput />
+							<Autocompleteinput />
 						</MapControl>
+						<Openweatherlayer 
+              layer={WEATHER_LAYER} 
+            />
 						{userPos && (
 							<AdvancedMarker
 								position={userPos}

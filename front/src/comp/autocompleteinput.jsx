@@ -1,7 +1,7 @@
 import { useRef, useEffect } from 'react';
 import { useMap } from '@vis.gl/react-google-maps';
 
-const AutocompleteInput = () => {
+const Autocompleteinput = () => {
   const map = useMap();
   const inputRef = useRef(null);
 
@@ -42,4 +42,4 @@ const AutocompleteInput = () => {
     </div>
   );
 };
-export default AutocompleteInput;
+export default Autocompleteinput;

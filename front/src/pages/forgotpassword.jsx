@@ -13,6 +13,10 @@ function ForgotPassword() {
 	const [password, setPassword] = useState('');
 	const [confirmPassword, setConfirmPassword] = useState('');
 
+	// useState hooks for password and confirm password visibility
+	const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+	const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
+
 	// useState hooks for error handling
 	const [usernameError, setUsernameError] = useState('');
 	const [passwordError, setPasswordError] = useState('');
@@ -29,6 +33,14 @@ function ForgotPassword() {
 
 	// password complexity regex
 	const passwordRegex = /^(?=.*[A-Z])(?=.*[0-9])(?=.*[^a-zA-Z0-9\s]).*$/;
+
+	// functions to toggle password and confirm password visibility
+	const togglePasswordVisibility = () => {
+    setIsPasswordVisible(!isPasswordVisible);
+  };
+  const toggleConfirmPasswordVisibility = () => {
+    setIsConfirmPasswordVisible(!isConfirmPasswordVisible);
+  };
 
 	// handle the password reset attempt
 	const handleSubmit = async (e) => {
@@ -175,15 +187,54 @@ function ForgotPassword() {
 			<title>Reset Password</title>
 			<form onSubmit={handleSubmit}>
 				<h1>Forgot your password? Reset it below.</h1>
-				<input type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} required ref={usernameInputRef}/>
+				<label htmlFor="usernameInput">Username:</label>
+				<input id='usernameInput' type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} required ref={usernameInputRef}/>
 				{usernameError && <p>{usernameError}</p>}
-				<input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required ref={passwordInputRef}/>
+				<label htmlFor="passwordInput">New Password:</label>
+				<div className="password-input-container">
+					<input 
+						id='passwordInput' 
+						type={isPasswordVisible ? 'text' : 'password'}
+						placeholder="********" 
+						value={password} 
+						onChange={(e) => setPassword(e.target.value)} 
+						required 
+						ref={passwordInputRef}
+					/>
+					<button
+						type="button"
+						onClick={togglePasswordVisibility}
+						className="password-toggle-button"
+						aria-label={isPasswordVisible ? 'Hide Password' : 'Show Password'}
+					>
+						{isPasswordVisible ? '🔒' : '👁️'}
+					</button>
+				</div>
 				{passwordError && <p>{passwordError}</p>}
-				<input type="password" placeholder="Confirm Password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required ref={confirmPasswordInputRef}/>
+				<label htmlFor="confirmPasswordInput">Confirm New Password:</label>
+				<div className="password-input-container">
+					<input 
+						id='confirmPasswordInput' 
+						type={isConfirmPasswordVisible ? 'text' : 'password'}
+						placeholder="********" 
+						value={confirmPassword} 
+						onChange={(e) => setConfirmPassword(e.target.value)} 
+						required 
+						ref={confirmPasswordInputRef}
+					/>
+					<button
+						type="button"
+						onClick={toggleConfirmPasswordVisibility}
+						className="password-toggle-button"
+						aria-label={isConfirmPasswordVisible ? 'Hide Password' : 'Show Password'}
+					>
+						{isConfirmPasswordVisible ? '🔒' : '👁️'}
+					</button>
+				</div>
 				{confirmPasswordError && <p>{confirmPasswordError}</p>}
 				{generalError && <p>{generalError}</p>}
 				{successMessage && <p>{successMessage}</p>}
-				<button type="submit">Reset Password</button>
+				<button id='resetPasswordButton' type="submit">Reset Password</button>
 			</form>
 		</div>
 	);

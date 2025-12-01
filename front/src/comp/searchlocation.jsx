@@ -1,5 +1,6 @@
 import { useRef, useEffect } from 'react';
 import { useMap } from '@vis.gl/react-google-maps';
+import '../index.css';
 
 const Searchlocation = () => {
   const map = useMap();
@@ -32,13 +33,15 @@ const Searchlocation = () => {
   }, [map]);
 
   return (
-    <div style={{ padding: '10px', backgroundColor: 'white', margin: '10px', borderRadius: '4px', boxShadow: '0 2px 6px rgba(0,0,0,.3)' }}>
+    <div className="global-search">
       <input
+        className="search-input" 
+        id="searchInput"
         ref={inputRef}
         type="text"
         placeholder="Search location..."
-        style={{ width: '300px', padding: '8px', border: '1px solid #ccc', borderRadius: '4px' }}
       />
+      <button className="search-btn" id="searchBtn">🔍</button>
     </div>
   );
 };

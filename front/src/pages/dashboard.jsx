@@ -2,6 +2,10 @@ import { useEffect } from 'react';
 import Managelocations from '../comp/managelocations';
 import Weathermap from '../comp/weathermap';
 import Weeklyweatherdata from '../comp/weeklyweatherdata';
+import Favlocations from '../comp/favlocations';
+import Layerbuttons from '../comp/layerbuttons';
+import Searchlocation from '../comp/searchlocation';
+import '../index.css';
 
 function Dashboard() {
 	// useEffect to fetch user data on component mount
@@ -41,18 +45,52 @@ function Dashboard() {
 	}, []);
 
 	return(
+		<div>
+			<div className="top-bar">
+				<div className="top-left">
+					<div className="today-weather">
+						Today’s Weather <span></span>
+					</div>
+				</div>
+			</div>
 
-		<div class="top-bar">
-			
-			
+			{/* Main App */}
+			<div className="weather-app">
 
+				{/* SideBar */}
+				<div className="sidebar">
+					<div>
+						<h2>Manage Locations</h2>
+						<div className="menu">
+							<button id="manageBtn"> Add/Remove </button>
+						</div>
+					</div>
 
+					<div className="account">
+						<div className="avatar"></div>
+						<div className="account-info">
+							<h4>John Doe</h4>
+							<p>Account</p>
+						</div>
+					</div>
+				</div>
+				{/* SideBar */}
 
+				{/* Main */}
+				<div className="main">
+					<div className="main-header">
+						<h2>Weekly Weather</h2>
+						<Favlocations />
+					</div>
+					<Weeklyweatherdata />
+					<div className="footer"> J.A.K.E Weather Dashboard </div>
+				</div>
+				{/* Main */}
+			</div>
+			{/* Main App */}
 
-
+			{/* Modal (Manage Locations) */}
 			<Managelocations />
-			<Weathermap />
-			<Weeklyweatherdata />
 		</div>
 	);
 };

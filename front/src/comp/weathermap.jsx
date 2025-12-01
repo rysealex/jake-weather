@@ -6,10 +6,10 @@ import Layerbuttons from './layerbuttons.jsx';
 
 // define all weather layer options
 const LAYER_OPTIONS = [
-	{ key: 'none', name: 'Geographical' },
-	{ key: 'wind_new', name: 'Wind Speed' },
-	{ key: 'precipitation_new', name: 'Precipitation' },
-	{ key: 'temp_new', name: 'Temperature' },
+	{ key: 'none', name: 'Geographical', icon: '🗺️' },
+	{ key: 'wind_new', name: 'Wind Speed', icon: '🍃' },
+	{ key: 'precipitation_new', name: 'Precipitation', icon: '🌧️' },
+	{ key: 'temp_new', name: 'Temperature', icon: '🌡️' },
 ]
 
 function Weathermap() {

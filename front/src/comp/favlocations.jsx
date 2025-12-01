@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import '../index.css';
 
 function Favlocations() {
 
@@ -42,7 +43,10 @@ function Favlocations() {
 	}, []);
 
   return(
-		<div>Favlocations Component</div>
+		<div className="favorites-wrapper">
+			<div className="favorites-title">⭐ Favorited Locations</div>
+			<div className="favorites" id="favorites"></div>
+		</div>
 	);
 };
 

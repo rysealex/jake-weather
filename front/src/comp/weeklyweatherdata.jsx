@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import '../index.css';
 
 function Weeklyweatherdata() {
 
@@ -39,8 +40,14 @@ function Weeklyweatherdata() {
 	}, [latitude, longitude]);
 
 	return(
-		<div>
-			<h1>Weekly Weather Data Component</h1>
+		<div className="locations">
+			<div className="card"><h3>Mon</h3><p>☀️ 1°C</p><small>Clear</small></div>
+			<div className="card"><h3>Tue</h3><p>☀️ 1°C</p><small>Clear</small></div>
+			<div className="card"><h3>Wed</h3><p>☀️ 1°C</p><small>Clear</small></div>
+			<div className="card"><h3>Thu</h3><p>☀️ 1°C</p><small>Clear</small></div>
+			<div className="card"><h3>Fri</h3><p>☀️ 1°C</p><small>Clear</small></div>
+			<div className="card"><h3>Sat</h3><p>☀️ 1°C</p><small>Clear</small></div>
+			<div className="card"><h3>Sun</h3><p>☀️ 1°C</p><small>Clear</small></div>
 		</div>
 	);
 };

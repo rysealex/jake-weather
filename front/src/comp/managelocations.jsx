@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react';
 import Favlocations from '../comp/favlocations';
+import '../index.css';
 
 function Managelocations() {
 
@@ -263,22 +264,39 @@ function Managelocations() {
 	};
 
 	return(
-		<div>
-			<h1>Manage Locations</h1>
-			<Favlocations />
-			<form onSubmit={handleAddLocation}>
-				<input type="text" placeholder="City" value={city} onChange={(e) => setCity(e.target.value)} required ref={cityInputRef} />
-				{cityError && <p className="error">{cityError}</p>}
-				<input type="text" placeholder="State" value={state} onChange={(e) => setState(e.target.value)} required ref={stateInputRef} />
-				{stateError && <p className="error">{stateError}</p>}
-				<input type="text" placeholder="Zip" value={zip} onChange={(e) => setZip(e.target.value)} required ref={zipInputRef} />
-				{zipError && <p className="error">{zipError}</p>}
-				{generalError && <p className="error">{generalError}</p>}
-				{successMessage && <p className="success">{successMessage}</p>}
-				<button type="submit">Add Location</button>
-				<button onClick={handleDeleteLocation}>Delete Location</button>
-				<button onClick={handleEditLocation}>Edit Location</button>
-			</form>
+		<div className="modal" id="modal">
+			<div className="modal-content" role="dialog" aria-modal="true" aria-labelledby="manageTitle">
+				<div className="locations-list" id="locationList">
+					<h3 id="manageTitle">Added Locations</h3>
+					<Favlocations />
+				</div>
+				<div className="location-details">
+					<div>
+						<h3>Location Info</h3>
+						<div className="info-group">
+							<form onSubmit={handleAddLocation}>
+								<label htmlFor="cityInput">City:</label>
+								<input id="cityInput" type="text" value={city} onChange={(e) => setCity(e.target.value)} required ref={cityInputRef} />
+								{cityError && <p className="error">{cityError}</p>}
+								<label htmlFor="stateInput">State:</label>
+								<input id="stateInput" type="text" value={state} onChange={(e) => setState(e.target.value)} required ref={stateInputRef} />
+								{stateError && <p className="error">{stateError}</p>}
+								<label htmlFor="zipInput">Zip:</label>
+								<input id="zipInput" type="text" value={zip} onChange={(e) => setZip(e.target.value)} required ref={zipInputRef} />
+								{zipError && <p className="error">{zipError}</p>}
+								{generalError && <p className="error">{generalError}</p>}
+								{successMessage && <p className="success">{successMessage}</p>}
+								<div className="modal-footer">
+									<button id="saveBtn" type="submit">Save</button>
+									<button id='saveBtn' onClick={handleEditLocation}>Edit</button>
+									<button id="closeBtn" onClick={handleDeleteLocation}>Delete</button>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+				<div className="close-modal" id="closeModalBtn">x</div>
+			</div>
 		</div>
 	);
 };

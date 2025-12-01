@@ -1,14 +1,8 @@
+import '../index.css';
+
 const Layerbuttons = ({ options, activeLayer, onLayerSelect }) => {
   return (
-    <div style={{
-      display: 'flex',
-      flexDirection: 'column',
-      padding: '5px',
-      margin: '10px 10px 0 10px',
-      backgroundColor: 'white',
-      borderRadius: '4px',
-      boxShadow: '0 2px 6px rgba(0,0,0,.3)',
-    }}>
+    <div className='map-buttons'>
       {options.map((option) => (
         <button
           key={option.key}
@@ -25,7 +19,7 @@ const Layerbuttons = ({ options, activeLayer, onLayerSelect }) => {
             transition: 'background-color 0.2s',
           }}
         >
-          {option.name}
+          {option.icon}
         </button>
       ))}
     </div>

@@ -30,7 +30,7 @@ class UserModel:
                 conn.close()
 
     """Function to add a new user to the jake weather database"""
-    def add_user(self, username, fname, lname, email, password, country, city, state, zip):
+    def add_user(self, username, fname, lname, email, password, city, state, zip):
         conn = None
         cursor = None
         try:
@@ -38,11 +38,11 @@ class UserModel:
             cursor = conn.cursor()
 
             sql = """
-            INSERT INTO user (username, fname, lname, email, password, country, city, state, zip)
-            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
+            INSERT INTO user (username, fname, lname, email, password, city, state, zip)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
             """
 
-            user_data = (username, fname, lname, email, password, country, city, state, zip)
+            user_data = (username, fname, lname, email, password, city, state, zip)
             cursor.execute(sql, user_data)
             conn.commit() # Commit the transaction
             return cursor.lastrowid # Return the ID of the newly created user

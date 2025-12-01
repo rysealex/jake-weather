@@ -22,10 +22,9 @@ def add_favlocation(userid):
     longitude = data.get('longitude')
     city = data.get('city')
     state = data.get('state')
-    country = data.get('country')
     zip = data.get('zip')
 
-    locationid = favlocations_model.add_favlocation(userid, latitude, longitude, city, state, country, zip)
+    locationid = favlocations_model.add_favlocation(userid, latitude, longitude, city, state, zip)
 
     if locationid:
         return jsonify({"message": "Favorite location successfully added", "locationid": locationid}), 200
@@ -40,10 +39,9 @@ def edit_favlocation(locationid):
     longitude = data.get('longitude')
     city = data.get('city')
     state = data.get('state')
-    country = data.get('country')
     zip = data.get('zip')
 
-    locationid = favlocations_model.edit_favlocation(locationid, latitude, longitude, city, state, country, zip)
+    locationid = favlocations_model.edit_favlocation(locationid, latitude, longitude, city, state, zip)
 
     if locationid:
         return jsonify({"message": "Favorite location successfully edited", "locationid": locationid}), 200

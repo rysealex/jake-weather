@@ -18,7 +18,6 @@ CREATE TABLE IF NOT EXISTS `jake_weather`.`user` (
   `lname` VARCHAR(45) NOT NULL,
   `email` VARCHAR(45) NOT NULL,
   `password` VARCHAR(255) NOT NULL,
-  `country` VARCHAR(45) NOT NULL,
   `city` VARCHAR(45) NOT NULL,
   `state` CHAR(2) NOT NULL,
   `zip` CHAR(5) NOT NULL,
@@ -36,7 +35,6 @@ CREATE TABLE IF NOT EXISTS `jake_weather`.`favlocations` (
   `longitude` FLOAT NOT NULL,
   `city` VARCHAR(45) NOT NULL,
   `state` CHAR(2) NOT NULL,
-  `country` VARCHAR(45) NOT NULL,
   `zip` CHAR(5) NOT NULL,
   PRIMARY KEY (`locationid`),
   INDEX `favlocations_user_idx` (`userid` ASC) VISIBLE,
@@ -48,13 +46,13 @@ CREATE TABLE IF NOT EXISTS `jake_weather`.`favlocations` (
 ENGINE = InnoDB;
 
 
-INSERT INTO `jake_weather`.`user` (`username`, `fname`, `lname`, `email`, `password`, `country`, `city`, `state`, `zip`) VALUES 
-('alexryse', 'alex', 'ryse', 'alexryse@email.com', 'alexryse', 'USA', 'Ellensburg', 'WA', '98926');
+INSERT INTO `jake_weather`.`user` (`username`, `fname`, `lname`, `email`, `password`, `city`, `state`, `zip`) VALUES 
+('alexryse', 'alex', 'ryse', 'alexryse@email.com', 'alexryse', 'Ellensburg', 'WA', '98926');
 
-INSERT INTO `jake_weather`.`favlocations` (`userid`, `latitude`, `longitude`, `city`, `state`, `country`, `zip`) VALUES 
-(2, 47.0038, -120.549, 'Ellensburg', 'WA', 'USA', '98926'),
-(2, 34.0522, -118.2437, 'Los Angeles', 'CA', 'USA', '90001'),
-(2, 40.7128, -74.0060, 'New York', 'NY', 'USA', '10001');
+INSERT INTO `jake_weather`.`favlocations` (`userid`, `latitude`, `longitude`, `city`, `state`, `zip`) VALUES 
+(2, 47.0038, -120.549, 'Ellensburg', 'WA', '98926'),
+(2, 34.0522, -118.2437, 'Los Angeles', 'CA', '90001'),
+(2, 40.7128, -74.0060, 'New York', 'NY', '10001');
 
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;

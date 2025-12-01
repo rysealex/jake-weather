@@ -28,18 +28,17 @@ def add_user():
     lname = data.get('lname')
     email = data.get('email')
     password = data.get('password')
-    country = data.get('country')
     city = data.get('city')
     state = data.get('state')
     zip = data.get('zip')
 
-    if not all([username, fname, lname, email, password, country, city, state, zip]):
+    if not all([username, fname, lname, email, password, city, state, zip]):
         return jsonify({"error": "All fields are required"}), 400
     
     # hash the password before storing in jake weather db
     hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
 
-    userid = user_model.add_user(username, fname, lname, email, hashed_password, country, city, state, zip)
+    userid = user_model.add_user(username, fname, lname, email, hashed_password, city, state, zip)
 
     if userid:
         return jsonify({"message": "User added successfully", "userid": userid}), 201

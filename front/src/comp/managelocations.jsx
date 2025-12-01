@@ -6,13 +6,11 @@ function Managelocations() {
 	// useState hooks for manage locations inputs
 	const [city, setCity] = useState('');
 	const [state, setState] = useState('');
-	const [country, setCountry] = useState('');
 	const [zip, setZip] = useState('');
 
 	// useState hooks for error handling
 	const [cityError, setCityError] = useState('');
 	const [stateError, setStateError] = useState('');
-	const [countryError, setCountryError] = useState('');
 	const [zipError, setZipError] = useState('');
 	const [generalError, setGeneralError] = useState('');
 
@@ -22,7 +20,6 @@ function Managelocations() {
 	// refs for manage locations input fields
 	const cityInputRef = useRef(null);
 	const stateInputRef = useRef(null);
-	const countryInputRef = useRef(null);
 	const zipInputRef = useRef(null);
 
 	// regex to check for only letters and spaces
@@ -35,7 +32,6 @@ function Managelocations() {
 		// clear previous errors and success message
 		setCityError("");
 		setStateError("");
-		setCountryError("");
 		setZipError("");
 		setGeneralError("");
 		setSuccessMessage("");
@@ -72,16 +68,6 @@ function Managelocations() {
 			hasError = true;
 			stateInputRef.current.focus();
 		}
-		else if (!country) {
-			setCountryError('Country is required');
-			hasError = true;
-			countryInputRef.current.focus();
-		}
-		else if (!lettersOnlyRegex.test(country)) {
-			setCountryError('Country must contain only letters and spaces');
-			hasError = true;
-			countryInputRef.current.focus();
-		}
 		else if (!zip) {
 			setZipError('Zip is required');
 			hasError = true;
@@ -113,13 +99,12 @@ function Managelocations() {
 				headers: {
 					'Content-Type': 'application/json',
 				},
-				body: JSON.stringify({ latitude, longitude, city, state, country, zip }),
+				body: JSON.stringify({ latitude, longitude, city, state, zip }),
 			});
 			// check if response is ok
 			if (favlocationResponse.ok) {
 				setCity('');
 				setState('');
-				setCountry('');
 				setZip('');
 				// show success message for a short duration
 				setSuccessMessage('Favorite location added successfully');
@@ -131,7 +116,6 @@ function Managelocations() {
 			} else {
 				setCity('');
 				setState('');
-				setCountry('');
 				setZip('');
 				cityInputRef.current.focus();
 				const errorData = await favlocationResponse.json();
@@ -140,7 +124,6 @@ function Managelocations() {
 		} catch (error) {
 			setCity('');
 			setState('');
-			setCountry('');
 			setZip('');
 			cityInputRef.current.focus();
 			setGeneralError('Error adding favorite location', error);
@@ -187,7 +170,6 @@ function Managelocations() {
 		// clear previous errors and success message
 		setCityError("");
 		setStateError("");
-		setCountryError("");
 		setZipError("");
 		setGeneralError("");
 		setSuccessMessage("");
@@ -217,16 +199,6 @@ function Managelocations() {
 			setStateError('State must be 2 characters long');
 			hasError = true;
 			stateInputRef.current.focus();
-		}
-		else if (!country) {
-			setCountryError('Country is required');
-			hasError = true;
-			countryInputRef.current.focus();
-		}
-		else if (!lettersOnlyRegex.test(country)) {
-			setCountryError('Country must contain only letters and spaces');
-			hasError = true;
-			countryInputRef.current.focus();
 		}
 		else if (!zip) {
 			setZipError('Zip is required');
@@ -259,13 +231,12 @@ function Managelocations() {
 				headers: {
 					'Content-Type': 'application/json',
 				},
-				body: JSON.stringify({ latitude, longitude, city, state, country, zip }),
+				body: JSON.stringify({ latitude, longitude, city, state, zip }),
 			});
 			// check if response is ok
 			if (ediResponse.ok) {
 				setCity('');
 				setState('');
-				setCountry('');
 				setZip('');
 				// show success message for a short duration
 				setSuccessMessage('Favorite location edited successfully');
@@ -277,7 +248,6 @@ function Managelocations() {
 			} else {
 				setCity('');
 				setState('');
-				setCountry('');
 				setZip('');
 				cityInputRef.current.focus();
 				const errorData = await ediResponse.json();
@@ -286,7 +256,6 @@ function Managelocations() {
 		} catch (error) {
 			setCity('');
 			setState('');
-			setCountry('');
 			setZip('');
 			cityInputRef.current.focus();
 			setGeneralError('Error editing favorite location', error);
@@ -302,8 +271,6 @@ function Managelocations() {
 				{cityError && <p className="error">{cityError}</p>}
 				<input type="text" placeholder="State" value={state} onChange={(e) => setState(e.target.value)} required ref={stateInputRef} />
 				{stateError && <p className="error">{stateError}</p>}
-				<input type="text" placeholder="Country" value={country} onChange={(e) => setCountry(e.target.value)} required ref={countryInputRef} />
-				{countryError && <p className="error">{countryError}</p>}
 				<input type="text" placeholder="Zip" value={zip} onChange={(e) => setZip(e.target.value)} required ref={zipInputRef} />
 				{zipError && <p className="error">{zipError}</p>}
 				{generalError && <p className="error">{generalError}</p>}

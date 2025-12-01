@@ -13,7 +13,6 @@ function Signup() {
 	const [lname, setLname] = useState('');
 	const [email, setEmail] = useState('');
 	const [password, setPassword] = useState('');
-	const [country, setCountry] = useState('');
 	const [city, setCity] = useState('');
 	const [state, setState] = useState('');
 	const [zip, setZip] = useState('');
@@ -83,11 +82,11 @@ function Signup() {
 			hasError = true;
 			passwordInputRef.current.focus();
 		}
-		else if (!fname || !lname || !email || !country || !city || !state || !zip) {
+		else if (!fname || !lname || !email || !city || !state || !zip) {
 			setGeneralError('All fields are required');
 			hasError = true;
 		}
-		else if (fname > 45 || lname > 45 || email > 45 || country > 45 || city > 45) { 
+		else if (fname > 45 || lname > 45 || email > 45 || city > 45) { 
 			setGeneralError('Input fields must be at most 45 characters long');
 			hasError = true;
 		}
@@ -122,7 +121,6 @@ function Signup() {
 				setLname("");
 				setEmail("");
 				setPassword("");
-				setCountry("");
 				setCity("");
 				setState("");
 				setZip("");
@@ -137,7 +135,7 @@ function Signup() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ username, fname, lname, email, password, country, city, state, zip }),
+        body: JSON.stringify({ username, fname, lname, email, password, city, state, zip }),
       });
       // check if the response is ok
       if (response.ok) {
@@ -146,7 +144,6 @@ function Signup() {
 				setLname("");
 				setEmail("");
 				setPassword("");
-				setCountry("");
 				setCity("");
 				setState("");
 				setZip("");
@@ -161,7 +158,6 @@ function Signup() {
 				setLname("");
 				setEmail("");
         setPassword("");
-				setCountry("");
 				setCity("");
 				setState("");
 				setZip("");
@@ -175,7 +171,6 @@ function Signup() {
 			setLname("");
 			setEmail("");
 			setPassword("");
-			setCountry("");
 			setCity("");
 			setState("");
 			setZip("");
@@ -195,7 +190,6 @@ function Signup() {
 				<input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required />
 				<input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required ref={passwordInputRef}/>
 				{passwordError && <p>{passwordError}</p>}
-				<input type="text" placeholder="Country" value={country} onChange={(e) => setCountry(e.target.value)} required />
 				<input type="text" placeholder="City" value={city} onChange={(e) => setCity(e.target.value)} required />
 				<input type="text" placeholder="State" value={state} onChange={(e) => setState(e.target.value)} required ref={stateInputRef}/>
 				<input type="text" placeholder="Zip" value={zip} onChange={(e) => setZip(e.target.value)} required ref={zipInputRef}/>

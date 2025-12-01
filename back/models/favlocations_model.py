@@ -29,7 +29,7 @@ class FavlocationsModel:
                 conn.close()
 
     """Function to add a favorite location for a user"""
-    def add_favlocation(self, userid, latitude, longitude, city, state, country, zip):
+    def add_favlocation(self, userid, latitude, longitude, city, state, zip):
         conn = None
         cursor = None
         try:
@@ -37,11 +37,11 @@ class FavlocationsModel:
             cursor = conn.cursor()
 
             sql = """
-            INSERT INTO favlocations (userid, latitude, longitude, city, state, country, zip)
-            VALUES (%s, %s, %s, %s, %s, %s, %s)
+            INSERT INTO favlocations (userid, latitude, longitude, city, state, zip)
+            VALUES (%s, %s, %s, %s, %s, %s)
             """
 
-            cursor.execute(sql, (userid, latitude, longitude, city, state, country, zip))
+            cursor.execute(sql, (userid, latitude, longitude, city, state, zip))
             conn.commit()
             return cursor.lastrowid # Return the locationid of the newly added location
         except Error as e:
@@ -56,7 +56,7 @@ class FavlocationsModel:
                 conn.close()
 
     """Function to edit a favorite location for a user"""
-    def edit_favlocation(self, locationid, latitude, longitude, city, state, country, zip):
+    def edit_favlocation(self, locationid, latitude, longitude, city, state, zip):
         conn = None
         cursor = None
         try:
@@ -65,11 +65,11 @@ class FavlocationsModel:
 
             sql = """
             UPDATE favlocations
-            SET latitude = %s, longitude = %s, city = %s, state = %s, country = %s, zip = %s
+            SET latitude = %s, longitude = %s, city = %s, state = %s, zip = %s
             WHERE locationid = %s
             """
 
-            cursor.execute(sql, (latitude, longitude, city, state, country, zip, locationid))
+            cursor.execute(sql, (latitude, longitude, city, state, zip, locationid))
             conn.commit()
             
             # Check if any row was actually updated

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import '../index.css';
 
 function ForgotPassword() {
 	const navigate = useNavigate();
@@ -94,13 +95,17 @@ function ForgotPassword() {
 	};
 
 	return(
-		<div>
-			<h1>Forgot Password Page</h1>
+		<div class="password-reset-wrapper">
+			<title>Reset Password</title>
+
+			 
 			<form onSubmit={handleSubmit}>
+				<h1>Forgot your password? Reset it below.</h1>
 				<input type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} required />
 				<input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required />
 				<input type="password" placeholder="Confirm Password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} required />
 				<button type="submit">Reset Password</button>
+
 			</form>
 		</div>
 	);

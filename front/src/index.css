@@ -14,8 +14,448 @@ code {
 }
 
 /* Dashboard CSS */ 
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Inter', sans-serif;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    position: relative;
+  }
 
-/* Forgot Password CSS */
+  /* TOP BAR */
+  .top-bar {
+    position: absolute;
+    top: 20px;
+    left: 25px;
+    right: 25px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    z-index: 100;
+  }
+
+  .top-left {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .today-weather {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    padding: 8px 14px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    font-size: 15px;
+    font-weight: 600;
+    color: #333;
+  }
+
+  .today-weather span { font-size: 20px; }
+
+  /* MAP LAYER BUTTONS */
+  .map-buttons {
+    display: flex;
+    gap: 6px;
+  }
+  .map-buttons button {
+    background: rgba(255,255,255,0.9);
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+    padding: 6px 10px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.15s;
+  }
+  .map-buttons button:hover {
+    background: #e5efff;
+    transform: scale(1.05);
+  }
+  .map-buttons button.active {
+    background: #3b82f6;
+    color: white;
+  }
+
+  /* SEARCH BAR */
+  .global-search {
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 10px;
+    padding: 8px 12px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    width: 280px;
+  }
+  .global-search input {
+    border: none; outline: none;
+    background: transparent;
+    flex: 1; font-size: 14px;
+    color: #333;
+  }
+  .search-btn {
+    background: #3b82f6;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 10px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: 0.15s;
+  }
+  .search-btn:hover {
+    background: #2563eb;
+  }
+
+  /* MAIN APP */
+  .weather-app {
+    position: absolute;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 88vw;
+    height: 25vh;
+    background: rgba(245, 247, 250, 0.93);
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+    display: flex;
+    overflow: hidden;
+    backdrop-filter: blur(14px);
+  }
+
+  /* SIDEBAR */
+  .sidebar {
+    width: 20%;
+    background: rgba(255, 255, 255, 0.9);
+    border-right: 1px solid #ddd;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 14px;
+  }
+  .sidebar h2 {
+    font-size: 16px;
+    margin-bottom: 8px;
+    color: #333;
+  }
+
+  .menu {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .menu button {
+    background: #f1f3f6;
+    border: none;
+    border-radius: 8px;
+    padding: 8px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: left;
+  }
+  .menu button:hover { background: #dde5ee; }
+
+  .account {
+    border-top: 1px solid #ddd;
+    padding-top: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .avatar { width: 32px; height: 32px; border-radius: 50%; background: #ccc; }
+  .account-info h4 { font-size: 12px; margin-bottom: 1px; }
+  .account-info p { font-size: 10px; color: #777; }
+
+  /* MAIN */
+  .main {
+    flex: 1;
+    padding: 14px 22px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    background: rgba(255, 255, 255, 0.85);
+  }
+
+  /* HEADER */
+  .main-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+  .main-header h2 { font-size: 18px; color: #222; }
+
+  /* FAVORITES PANEL */
+  .favorites-wrapper {
+    width: 220px;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 10px;
+    padding: 8px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  }
+  .favorites-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: #222;
+    margin-bottom: 6px;
+    text-align: center;
+  }
+  .favorites {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    max-height: 60px;
+    overflow-y: auto;
+  }
+  .favorite-item {
+    background: white;
+    border-left: 3px solid #3b82f6;
+    border-radius: 6px;
+    padding: 4px 6px;
+    font-size: 11px;
+    color: #333;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  /* WEEKLY WEATHER */
+  .locations {
+    display: flex;
+    gap: 10px;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+  }
+  .card {
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+    padding: 8px;
+    text-align: center;
+    min-width: 90px;
+    flex: 0 0 auto;
+  }
+  .card h3 { font-size: 13px; margin: 3px 0; }
+  .card p { font-size: 15px; margin: 2px 0; }
+  .card small { font-size: 11px; color: #666; }
+
+  .footer {
+    text-align: right;
+    color: #777;
+    font-size: 10px;
+    margin-top: auto;
+    padding-top: 4px;
+  }
+
+  /* MODAL */
+/* MODAL */
+.modal {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.4);
+  display: flex;           
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+}
+
+.modal.show { display: flex; }
+
+.modal-content {
+  display: flex;
+  width: 720px;
+  height: 420px;
+  background: rgba(255, 255, 255, 0.97);
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+  overflow: hidden;
+  backdrop-filter: blur(10px);
+  animation: fadeIn 0.25s ease;
+  font-family: 'Inter', sans-serif;
+}
+
+/* Split modal into left/right panels */
+.locations-list {
+  flex: 1;
+  background: #f5f7fa;
+  padding: 20px;
+  overflow-y: auto;
+  border-right: 1px solid #ddd;
+}
+
+.locations-list h3 {
+  margin-bottom: 12px;
+  font-size: 16px;
+  color: #333;
+}
+
+.location-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: white;
+  padding: 6px 10px;
+  margin-bottom: 6px;
+  border-radius: 6px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.location-item.active {
+  border-left: 3px solid #3b82f6;
+}
+
+/* Right panel */
+.location-details {
+  flex: 1.2;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.location-details h3 {
+  font-size: 18px;
+  margin-bottom: 12px;
+  color: #222;
+}
+
+.info-group label {
+  display: block;
+  font-size: 12px;
+  margin-top: 8px;
+  margin-bottom: 2px;
+  color: #555;
+}
+
+.info-group input {
+  width: 100%;
+  padding: 6px 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  margin-bottom: 6px;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.modal-footer button {
+  padding: 6px 12px;
+  font-size: 14px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+#saveBtn { background: #3b82f6; color: white; }
+#saveBtn:hover { background: #2563eb; }
+#closeBtn { background: #f1f3f6; color: #333; }
+#closeBtn:hover { background: #ddd; }
+
+/* Close icon */
+.close-modal {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  font-size: 20px;
+  cursor: pointer;
+  color: #555;
+}
+.close-modal:hover { color: #222; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.98); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+/* Forgot Password CSS*/
+/* Page wrapper */
+.password-reset-wrapper {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #f5f7fa; 
+  padding: 20px;
+  font-family: "Arial", sans-serif;
+}
+
+/* Form container */
+.password-reset-wrapper form {
+  background: #ffffff;
+  padding: 35px 40px;
+  border-radius: 12px;
+  box-shadow: 0px 4px 18px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 380px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Title */
+.password-reset-wrapper h1 {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-bottom: 25px;
+  color: #333;
+  text-align: center;
+}
+
+/* Inputs */
+.password-reset-wrapper input {
+  margin-bottom: 15px;
+  padding: 12px 14px;
+  border: 1px solid #dcdfe6;
+  border-radius: 8px;
+  font-size: 15px;
+  transition: border-color 0.2s ease;
+}
+
+.password-reset-wrapper input:focus {
+  border-color: #7aa7ff;
+  outline: none;
+}
+
+/* Buttons */
+.password-reset-wrapper button {
+  margin-top: 5px;
+  padding: 12px;
+  background-color: #4e7eff;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.password-reset-wrapper button:hover {
+  background-color: #3b63d9;
+}
+
+/* Responsive */
+@media (max-width: 480px) {
+  .password-reset-wrapper form {
+    padding: 25px 30px;
+  }
+}
+
+
+
+
 
 /* Login CSS */
 

@@ -1,15 +1,25 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, act } from 'react';
 import { APIProvider, Map, AdvancedMarker, MapControl, ControlPosition } from '@vis.gl/react-google-maps';
-import Autocompleteinput from './autocompleteinput.jsx';
+import Searchlocation from './searchlocation.jsx';
 import Openweatherlayer from './openweatherlayer.jsx';
+import Layerbuttons from './layerbuttons.jsx';
 
-const WEATHER_LAYER = 'wind_new';
+// define all weather layer options
+const LAYER_OPTIONS = [
+	{ key: 'none', name: 'Geographical' },
+	{ key: 'wind_new', name: 'Wind Speed' },
+	{ key: 'precipitation_new', name: 'Precipitation' },
+	{ key: 'temp_new', name: 'Temperature' },
+]
 
 function Weathermap() {
 
 	// useState hooks for geolocation
 	const [userPos, setUserPos] = useState(null);
 	const [geolocationError, setGeolocationError] = useState(null);
+
+	// useState hook for active weather layer
+	const [activeLayer, setActiveLayer] = useState(LAYER_OPTIONS[0].key);
 
 	// default map position (default to San Francisco)
 	const mapPos = { lat: 37.7749, lng: -122.4194 }; 
@@ -54,11 +64,20 @@ function Weathermap() {
 						disableDefaultUI={true}
 					>
 						<MapControl position={ControlPosition.TOP_RIGHT}>
-							<Autocompleteinput />
+							<Searchlocation />
 						</MapControl>
-						<Openweatherlayer 
-              layer={WEATHER_LAYER} 
-            />
+						<MapControl position={ControlPosition.LEFT_TOP}>
+							<Layerbuttons 
+								options={LAYER_OPTIONS}
+								activeLayer={activeLayer}
+								onLayerSelect={setActiveLayer}
+							/>
+						</MapControl>
+						{activeLayer !== 'none' && (
+							<Openweatherlayer 
+								layer={activeLayer}
+							/>
+						)}
 						{userPos && (
 							<AdvancedMarker
 								position={userPos}

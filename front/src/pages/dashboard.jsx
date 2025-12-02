@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Managelocations from '../comp/managelocations';
 import Weathermap from '../comp/weathermap';
 import Weeklyweatherdata from '../comp/weeklyweatherdata';
@@ -8,6 +8,10 @@ import Searchlocation from '../comp/searchlocation';
 import '../index.css';
 
 function Dashboard() {
+
+	let latitude;
+	let longitude;
+
 	// useEffect to fetch user data on component mount
 	useEffect(() => {
 		const fetchUserData = async () => {
@@ -19,7 +23,6 @@ function Dashboard() {
 				console.log('No userid found');
 				return;
 			}
-
 			// proceed to fetch user data with API calls
 			try {
 				const response = await fetch(`http://localhost:5000/user/${userid}`, {
@@ -34,14 +37,23 @@ function Dashboard() {
 					console.log('User data:', userData);
 				} else {
 					const errorData = await response.json();
-        	console.log('User data fetch failed:', errorData.error);
+        			console.log('User data fetch failed:', errorData.error);
 				}
 			} catch (error) {
 				console.error('Error fetching user data:', error);
 			}
+
 		};
 
 		fetchUserData();
+
+		const fetchLatitudeLongitude = async () => {
+			// get the latitude and longitude from local storage
+			latitude = localStorage.getItem('latitude');
+			longitude = localStorage.getItem('longitude');
+		};
+
+		fetchLatitudeLongitude();
 	}, []);
 
 	return(
@@ -56,7 +68,7 @@ function Dashboard() {
 
 			{/* Main App */}
 			<div className="weather-app">
-
+				<Weathermap />
 				{/* SideBar */}
 				<div className="sidebar">
 					<div>
@@ -82,7 +94,7 @@ function Dashboard() {
 						<h2>Weekly Weather</h2>
 						<Favlocations />
 					</div>
-					<Weeklyweatherdata />
+					{latitude && longitude && <Weeklyweatherdata latitude={latitude} longitude={longitude}  />}
 					<div className="footer"> J.A.K.E Weather Dashboard </div>
 				</div>
 				{/* Main */}

@@ -12,8 +12,8 @@ api_bp = Blueprint('api', __name__, url_prefix='/api')
 
 load_dotenv(os.path.join(os.path.dirname(__file__), "..", ".env"))
 
-@api_bp.route("/weather-data", methods=['GET'])
-def get_weather_data():
+@api_bp.route("/weather-data/<latitude>/<longitude>", methods=['GET'])
+def get_weather_data(latitude, longitude):
 
     # Read query parameters
     cache_session = requests_cache.CachedSession('.cache', expire_after = 3600)
@@ -28,8 +28,8 @@ def get_weather_data():
     url = os.getenv('OPEN_METEO_URL')
 
     params = {
-        "latitude": 46.9965,
-        "longitude": -120.5478,
+        "latitude": latitude,
+        "longitude": longitude,
         "hourly": "temperature_2m,weather_code",
         "models": "gfs_seamless",
         "temperature_unit":"fahrenheit",

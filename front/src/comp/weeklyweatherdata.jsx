@@ -1,6 +1,38 @@
 import { useState, useEffect } from 'react';
 import '../index.css';
 
+// helper function to map WMO weather codes to icon and description
+const getWeatherIcon = (code) => {
+	switch (true) {
+		case code === 0:
+			return { icon: '☀️', description: 'Clear sky' };
+		case code >= 1 && code <= 3:
+			return { icon: '☁️', description: 'Cloudy' };
+		case code >= 45 && code <= 48:
+			return { icon: '🌫️', description: 'Fog' };
+		case code >= 51 && code <= 55:
+			return { icon: '🌧️', description: 'Drizzle' };
+		case code >= 61 && code <= 65:
+			return { icon: '☔', description: 'Rain' };
+		case code >= 71 && code <= 77:
+			return { icon: '❄️', description: 'Snow' };
+		case code >= 80 && code <= 82:
+			return { icon: '💦', description: 'Rain showers' };
+		case code >= 85 && code <= 86:
+			return { icon: '🌨️', description: 'Snow showers' };
+		case code >= 95 && code <= 99:
+			return { icon: '⛈️', description: 'Thunderstorm' };
+		default:
+			return { icon: '❓', description: 'Unknown' }
+	}
+};
+
+// helper function to format the date string into a short day name
+const formatDay = (dateString) => {
+	const date = new Date(dateString);
+	return date.toLocaleDateString('en-US', { weekday: 'short' });
+};
+
 function Weeklyweatherdata({ latitude, longitude }) {
 
 	// useState hook for weekly weather data
@@ -37,15 +69,28 @@ function Weeklyweatherdata({ latitude, longitude }) {
 		fetchWeatherData();
 	}, [latitude, longitude]);
 
+	// ensure weekly array is present before map attempt
+	const weeklyForecast = weeklyWeatherData?.weekly || [];
+
 	return(
 		<div className="locations">
-			<div className="card"><h3>Mon</h3><p>☀️ 1°C</p><small>Clear</small></div>
-			<div className="card"><h3>Tue</h3><p>☀️ 1°C</p><small>Clear</small></div>
-			<div className="card"><h3>Wed</h3><p>☀️ 1°C</p><small>Clear</small></div>
-			<div className="card"><h3>Thu</h3><p>☀️ 1°C</p><small>Clear</small></div>
-			<div className="card"><h3>Fri</h3><p>☀️ 1°C</p><small>Clear</small></div>
-			<div className="card"><h3>Sat</h3><p>☀️ 1°C</p><small>Clear</small></div>
-			<div className="card"><h3>Sun</h3><p>☀️ 1°C</p><small>Clear</small></div>
+			{weeklyForecast.length === 0 ? (
+				<p>Loading weekly weather data...</p>
+			) : (
+				weeklyForecast.map((day, index) => {
+					const { icon, description } = getWeatherIcon(day.weather_code);
+					const dayName = formatDay(day.date);
+					const temperature = Math.round(day.temperature_2m);
+
+					return (
+						<div key={index} className='card'>
+							<h3>{dayName}</h3>
+							<p>{icon} {temperature}°F</p>
+							<small>{description}</small>
+						</div>
+					);
+				})
+			)}
 		</div>
 	);
 };

@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import Favlocations from '../comp/favlocations';
 import '../index.css';
 
@@ -18,6 +18,9 @@ function Managelocations() {
 	// useState hook for success message
 	const [successMessage, setSuccessMessage] = useState('');
 
+	// useState to trigger a refresh in favlocation component
+	const [refreshTrigger, setRefreshTrigger] = useState(0);
+
 	// refs for manage locations input fields
 	const cityInputRef = useRef(null);
 	const stateInputRef = useRef(null);
@@ -25,6 +28,12 @@ function Managelocations() {
 
 	// regex to check for only letters and spaces
 	const lettersOnlyRegex = /^[A-Za-z\s]+$/;
+
+	// useEffect to clear the locationid from local storage on component mount
+	useEffect(() => {
+    localStorage.removeItem('locationid');
+
+  }, []);
 
 	// function to handle selected location from the favlocations component
 	const handleLocationSelect = (location) => {
@@ -44,29 +53,43 @@ function Managelocations() {
     localStorage.setItem('locationid', location.locationid);
   };
 
-	// handle adding a new location
-	const handleAddLocation = async (e) => {
+	// handle the save location action
+	const handleSaveLocation = async (e) => {
 		e.preventDefault();
 
-		// clear previous errors and success message
-		setCityError("");
-		setStateError("");
-		setZipError("");
-		setGeneralError("");
-		setSuccessMessage("");
+		// get the locationid from local storage
+    const locationid = localStorage.getItem('locationid');
+    
+    // check if user is editing (locationid is present) or adding a location (locationid not present)
+    const isEditing = !!locationid;
+    
+    // clear previous errors and success message
+    setCityError("");
+    setStateError("");
+    setZipError("");
+    setGeneralError("");
+    setSuccessMessage("");
+    
+    // get the userid from local storage
+    const userid = localStorage.getItem('userid');
 
-		// get the userid from local storage
-		const userid = localStorage.getItem('userid');
+    if (isEditing) {
+			// check if locationid found for editing
+      if (!locationid) {
+        setGeneralError('Error: Attempted to edit without a selected location ID');
+        return; 
+      }
+    } else {
+      // check if userid found for adding
+      if (!userid) {
+        setGeneralError('No userid found for adding location');
+        return;
+      }
+    }
+    
+    let hasError = false;
 
-		if (!userid) {
-			// if no userid, navigate to login page
-			console.log('No userid found');
-			return;
-		}
-
-		let hasError = false;
-
-		// provide input validation here
+    // provide input validation here
 		if (!city) {
 			setCityError('City is required');
 			hasError = true;
@@ -106,47 +129,55 @@ function Managelocations() {
 			return; // stop if there are validation errors
 		}
 
-		// proceed to add location with API calls
-		try {
-			// step 1: get the latitude and longitude from the location data
-			const latitude = 46.9965
-			const longitude = -120.5478;
+    // determine which API URL and HTTP method to use
+    const method = isEditing ? 'PUT' : 'POST';
+    const endpoint = isEditing 
+      ? `http://localhost:5000/favlocations/edit/${locationid}`
+      : `http://localhost:5000/favlocations/add/${userid}`;
 
-			// step 2: add the favorite location
-			const favlocationResponse = await fetch(`http://localhost:5000/favlocations/add/${userid}`, {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify({ latitude, longitude, city, state, zip }),
-			});
+		// determine which success and error messages to display
+    const successMsg = isEditing ? 'Favorite location edited successfully' : 'Favorite location added successfully';
+    const erroreMsg = isEditing ? 'Failed to edit favorite location' : 'Failed to add favorite location';
+
+    try {
+      // USE GEOCODING API LATER
+      const latitude = isEditing ? 30.2672 : 46.9965;
+      const longitude = isEditing ? 97.7431 : -120.5478;
+
+      const response = await fetch(endpoint, {
+        method: method,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ latitude, longitude, city, state, zip }),
+      });
 			// check if response is ok
-			if (favlocationResponse.ok) {
-				setCity('');
-				setState('');
-				setZip('');
+      if (response.ok) {
+        if (!isEditing) {
+					setCity('');
+					setState('');
+					setZip('');
+        }
+				// trigger the favlocations component fetch refresh after successful add/edit
+				setRefreshTrigger(prev => prev + 1);
 				// show success message for a short duration
-				setSuccessMessage('Favorite location added successfully');
-				setTimeout(() => {
-					setSuccessMessage('');
-				}, 4000);
-				const favlocationData = await favlocationResponse.json();
-				console.log('Favorite location added successfully:', favlocationData);
-			} else {
-				setCity('');
-				setState('');
-				setZip('');
-				cityInputRef.current.focus();
-				const errorData = await favlocationResponse.json();
-				setGeneralError(errorData.error || 'Failed to add favorite location');
-			}
-		} catch (error) {
-			setCity('');
-			setState('');
-			setZip('');
-			cityInputRef.current.focus();
-			setGeneralError('Error adding favorite location', error);
-		}
+        setSuccessMessage(successMsg);
+        setTimeout(() => setSuccessMessage(''), 4000);
+      } else {
+        setCity('');
+        setState('');
+        setZip('');
+        cityInputRef.current.focus();
+        const errorData = await response.json();
+        setGeneralError(errorData.error || erroreMsg);
+      }
+    } catch (error) {
+      setCity('');
+      setState('');
+      setZip('');
+      cityInputRef.current.focus();
+      setGeneralError(`Error ${isEditing ? 'editing' : 'adding'} favorite location: ${error.message}`);
+    }
 	};
 
 	// handle deleting a location
@@ -171,6 +202,13 @@ function Managelocations() {
 			});
 			// check if response is ok
 			if (deleteResponse.ok) {
+				setCity('');
+        setState('');
+        setZip('');
+				// trigger the favlocations component fetch refresh after successful delete
+				setRefreshTrigger(prev => prev + 1);
+				// remove locationid from local storage
+				localStorage.removeItem('locationid');
 				// show success message for a short duration
 				setSuccessMessage('Favorite location deleted successfully');
 				setTimeout(() => {
@@ -187,122 +225,18 @@ function Managelocations() {
 		}
 	};
 
-	// handle editing a location
-	const handleEditLocation = async (e) => {
-		e.preventDefault();
-
-		// clear previous errors and success message
-		setCityError("");
-		setStateError("");
-		setZipError("");
-		setGeneralError("");
-		setSuccessMessage("");
-		
-		// get the locationid from the selected location in local storage
-		const locationid = localStorage.getItem('locationid');
-
-		if (!locationid) {
-			setGeneralError('No location selected for deletion');
-			return;
-		}
-
-		let hasError = false;
-
-		// provide input validation here
-		if (!city) {
-			setCityError('City is required');
-			hasError = true;
-			cityInputRef.current.focus();
-		}
-		else if (!lettersOnlyRegex.test(city)) {
-			setCityError('City must contain only letters and spaces');
-			hasError = true;
-			cityInputRef.current.focus();
-		}
-		else if (!state) {
-			setStateError('State is required');
-			hasError = true;
-			stateInputRef.current.focus();
-		}
-		else if (state.length !== 2) {
-			setStateError('State must be 2 characters long');
-			hasError = true;
-			stateInputRef.current.focus();
-		}
-		else if (!zip) {
-			setZipError('Zip is required');
-			hasError = true;
-			zipInputRef.current.focus();
-		}
-		else if (zip.length !== 5) {
-			setZipError('Zip must be 5 characters long');
-			hasError = true;
-			zipInputRef.current.focus();
-		}
-		else if (isNaN(zip)) {
-			setZipError('Zip must be a number');
-			hasError = true;
-			zipInputRef.current.focus();
-		}
-		if (hasError) {
-			return; // stop if there are validation errors
-		}
-
-		// proceed to edit location with API calls
-		try {
-			// step 1: get the latitude and longitude from the location data
-			const latitude = 30.2672;
-			const longitude = 97.7431;
-
-			// step 2: edit the favorite location
-			const editResponse = await fetch(`http://localhost:5000/favlocations/edit/${locationid}`, {
-				method: 'PUT',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify({ latitude, longitude, city, state, zip }),
-			});
-			// check if response is ok
-			if (editResponse.ok) {
-				setCity('');
-				setState('');
-				setZip('');
-				// show success message for a short duration
-				setSuccessMessage('Favorite location edited successfully');
-				setTimeout(() => {
-					setSuccessMessage('');
-				}, 4000);
-				const editData = await editResponse.json();
-				console.log('Favorite location edited successfully:', editData);
-			} else {
-				setCity('');
-				setState('');
-				setZip('');
-				cityInputRef.current.focus();
-				const errorData = await editResponse.json();
-				setGeneralError(errorData.error || 'Failed to edit favorite location');
-			}
-		} catch (error) {
-			setCity('');
-			setState('');
-			setZip('');
-			cityInputRef.current.focus();
-			setGeneralError('Error editing favorite location', error);
-		}
-	};
-
 	return(
 		<div className="modal" id="modal">
 			<div className="modal-content" role="dialog" aria-modal="true" aria-labelledby="manageTitle">
 				<div className="locations-list" id="locationList">
 					<h3 id="manageTitle">Added Locations</h3>
-					<Favlocations onLocationSelect={handleLocationSelect} />
+					<Favlocations onLocationSelect={handleLocationSelect} refreshTrigger={refreshTrigger} />
 				</div>
 				<div className="location-details">
 					<div>
 						<h3>Location Info</h3>
 						<div className="info-group">
-							<form onSubmit={handleAddLocation}>
+							<form onSubmit={handleSaveLocation}>
 								<label htmlFor="cityInput">City:</label>
 								<input id="cityInput" type="text" value={city} onChange={(e) => setCity(e.target.value)} required ref={cityInputRef} />
 								{cityError && <p className="error">{cityError}</p>}
@@ -368,7 +302,6 @@ function Managelocations() {
 								{successMessage && <p className="success">{successMessage}</p>}
 								<div className="modal-footer">
 									<button id="saveBtn" type="submit">Save</button>
-									<button id='saveBtn' onClick={handleEditLocation}>Edit</button>
 									<button id="closeBtn" onClick={handleDeleteLocation}>Delete</button>
 								</div>
 							</form>

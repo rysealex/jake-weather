@@ -194,7 +194,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 5px;
-  max-height: 60px;
+  /* max-height: 100px; */
   overflow-y: auto;
 }
 .favorite-item {
@@ -207,6 +207,14 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  height: 30px;
+}
+.favorite-item.selected {
+  background: #e0ebff;
+}
+.favorite-item:hover {
+  background: #f1f3f6;
+  cursor: pointer;
 }
 
 /* WEEKLY WEATHER */

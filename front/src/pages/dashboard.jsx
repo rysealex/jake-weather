@@ -7,6 +7,14 @@ import Layerbuttons from '../comp/layerbuttons';
 import Searchlocation from '../comp/searchlocation';
 import '../index.css';
 
+// define all weather layer options
+const LAYER_OPTIONS = [
+	{ key: 'none', name: 'Geographical', icon: '🗺️' },
+	{ key: 'wind_new', name: 'Wind Speed', icon: '🍃' },
+	{ key: 'precipitation_new', name: 'Precipitation', icon: '🌧️' },
+	{ key: 'temp_new', name: 'Temperature', icon: '🌡️' },
+]
+
 function Dashboard() {
 
 	// useState hooks for latitude and longitude
@@ -15,6 +23,9 @@ function Dashboard() {
 
 	// useState hooks for toggling manage locations component modal
 	const [isManageLocationsOpen, setIsManageLocationsOpen] = useState(false);
+
+	// useState hook for active weather layer
+	const [activeLayer, setActiveLayer] = useState(LAYER_OPTIONS[0].key);
 
 	// function to flip manage locations component modal
 	const toggleManageLocations = () => {
@@ -61,12 +72,20 @@ function Dashboard() {
 
 	return(
 		<div className="dashboard-container">
-			<Weathermap className="full-screen-map" />
+			<Weathermap 
+				className="full-screen-map" 
+				activeLayer={activeLayer}
+			/>
 			<div className="top-bar">
 				<div className="top-left">
 					<div className="today-weather">
 						Today’s Weather <span></span>
 					</div>
+					<Layerbuttons 
+						options={LAYER_OPTIONS}
+						activeLayer={activeLayer}
+						onLayerSelect={setActiveLayer}
+					/>
 				</div>
 			</div>
 

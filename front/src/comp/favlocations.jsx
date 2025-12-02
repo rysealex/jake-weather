@@ -6,10 +6,14 @@ function Favlocations() {
 	// useState hook for favorite locations
 	const [favlocations, setFavlocations] = useState([]);
 
+	// useState hook for selected favorite location clicked
+	const [selectedLocation, setSelectedLocation] = useState(null);
+
 	// function to handle what happens when a favorite location button is clicked
   const handleLocationClick = (location) => {
 		// set the selected locationid in local storage
 		localStorage.setItem('locationid', location.locationid);
+		setSelectedLocation(location);
   };
 
 	// useEffect to fetch favorite locations on component mount
@@ -58,7 +62,7 @@ function Favlocations() {
 						favlocations.map((location) => (
 							<button 
 								key={location.locationid}
-								className="favorite-item"
+								className={selectedLocation && selectedLocation.locationid === location.locationid ? "favorite-item selected" : "favorite-item"}
 								onClick={() => handleLocationClick(location)}
 							>
 								{location.city}, {location.state}

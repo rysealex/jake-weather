@@ -35,6 +35,36 @@ function Managelocations() {
 
   }, []);
 
+	// function to get latitude and longitude using Google Geocoding API
+	const getCoord = async (city, state, zip) => {
+		if (!process.env.REACT_APP_GOOGLE_MAPS_API_KEY) {
+			throw new Error("Google Maps API key is missing or not configured correctly.");
+		}
+
+		// construct the address query string
+		const address = `${city}, ${state}, ${zip}`;
+		const geocodeUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`;
+
+		// attempt to get latitude and longitude
+		try {
+			const response = await fetch(geocodeUrl);
+			const data = await response.json();
+			// check if status is ok and latitude and longitude returned
+			if (data.status === 'OK' && data.results.length > 0) {
+				const location = data.results[0].geometry.location;
+				console.log(`Latitude: ${location.lat}, Longitude: ${location.lng}`);
+				return {
+					latitude: location.lat,
+					longitude: location.lng
+				};
+			} else {
+				throw new Error(`Geocoding failed. Status: ${data.status}. Please check location details.`);
+			}
+		} catch (error) {
+			throw new Error(`Network or Google Geocoding API error: ${error.message}`);
+		};
+	};
+
 	// function to handle selected location from the favlocations component
 	const handleLocationSelect = (location) => {
     // clear any previous errors on selection
@@ -140,9 +170,8 @@ function Managelocations() {
     const erroreMsg = isEditing ? 'Failed to edit favorite location' : 'Failed to add favorite location';
 
     try {
-      // USE GEOCODING API LATER
-      const latitude = isEditing ? 30.2672 : 46.9965;
-      const longitude = isEditing ? 97.7431 : -120.5478;
+			// get the latitude and longitude from Google Geocoding API
+			const { latitude, longitude } = await getCoord(city, state, zip);
 
       const response = await fetch(endpoint, {
         method: method,
@@ -176,7 +205,8 @@ function Managelocations() {
       setState('');
       setZip('');
       cityInputRef.current.focus();
-      setGeneralError(`Error ${isEditing ? 'editing' : 'adding'} favorite location: ${error.message}`);
+			setGeneralError(`Operation failed: ${error.message}`);
+      // setGeneralError(`Error ${isEditing ? 'editing' : 'adding'} favorite location: ${error.message}`);
     }
 	};
 
@@ -188,7 +218,7 @@ function Managelocations() {
 		const locationid = localStorage.getItem('locationid');
 
 		if (!locationid) {
-			setGeneralError('No location selected for deletion');
+			setGeneralError('Select a favorite location to delete');
 			return;
 		}
 

@@ -26,6 +26,24 @@ function Managelocations() {
 	// regex to check for only letters and spaces
 	const lettersOnlyRegex = /^[A-Za-z\s]+$/;
 
+	// function to handle selected location from the favlocations component
+	const handleLocationSelect = (location) => {
+    // clear any previous errors on selection
+    setCityError("");
+    setStateError("");
+    setZipError("");
+    setGeneralError("");
+    setSuccessMessage("");
+    
+    // update the managelocations state
+    setCity(location.city);
+    setState(location.state);
+    setZip(location.zip);
+    
+    // store the selected locations locationid in local storage
+    localStorage.setItem('locationid', location.locationid);
+  };
+
 	// handle adding a new location
 	const handleAddLocation = async (e) => {
 		e.preventDefault();
@@ -278,7 +296,7 @@ function Managelocations() {
 			<div className="modal-content" role="dialog" aria-modal="true" aria-labelledby="manageTitle">
 				<div className="locations-list" id="locationList">
 					<h3 id="manageTitle">Added Locations</h3>
-					<Favlocations />
+					<Favlocations onLocationSelect={handleLocationSelect} />
 				</div>
 				<div className="location-details">
 					<div>
@@ -290,6 +308,7 @@ function Managelocations() {
 								{cityError && <p className="error">{cityError}</p>}
 								<label htmlFor="stateInput">State:</label>
 								<select id="stateInput" value={state} onChange={(e) => setState(e.target.value)} required ref={stateInputRef} >
+									<option value=""></option>
 									<option value="AL">AL</option>
 									<option value="AK">AK</option>
 									<option value="AZ">AZ</option>

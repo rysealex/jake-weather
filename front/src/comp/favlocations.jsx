@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import '../index.css';
 
-function Favlocations() {
+function Favlocations({ onLocationSelect }) {
 
 	// useState hook for favorite locations
 	const [favlocations, setFavlocations] = useState([]);
@@ -11,8 +11,7 @@ function Favlocations() {
 
 	// function to handle what happens when a favorite location button is clicked
   const handleLocationClick = (location) => {
-		// set the selected locationid in local storage
-		localStorage.setItem('locationid', location.locationid);
+		onLocationSelect(location);
 		setSelectedLocation(location);
   };
 

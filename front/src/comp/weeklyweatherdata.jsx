@@ -3,6 +3,9 @@ import '../index.css';
 
 function Weeklyweatherdata({ latitude, longitude }) {
 
+	// useState hook for weekly weather data
+	const [weeklyWeatherData, setWeeklyWeatherData] = useState([]);
+
 	// useEffect to get weather data based on latitude and longitude
 	useEffect(() => {
 		const fetchWeatherData = async () => {
@@ -15,11 +18,11 @@ function Weeklyweatherdata({ latitude, longitude }) {
 						headers: {
 							'Content-Type': 'application/json',
 						},
-						//body: JSON.stringify({ latitude, longitude }),
 					});
 					// check if the response is ok
 					if (response.ok) {
 						const data = await response.json();
+						setWeeklyWeatherData(data);
 						console.log('Weather Data:', data);
 					} else {
 						const errorData = await response.json();

@@ -152,9 +152,11 @@ function Dashboard() {
 				<div className="main">
 					<div className="main-header">
 						<h2>Weekly Weather</h2>
+					</div>
+					<div className='main-content-row'>
+						{latitude && longitude && <Weeklyweatherdata latitude={latitude} longitude={longitude} />}
 						<Favlocations />
 					</div>
-					{latitude && longitude && <Weeklyweatherdata latitude={latitude} longitude={longitude} />}
 					<div className="footer">J.A.K.E Weather Dashboard</div>
 				</div>
 				{/* Main */}

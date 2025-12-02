@@ -27,6 +27,15 @@ function Dashboard() {
 	// useState hook for active weather layer
 	const [activeLayer, setActiveLayer] = useState(LAYER_OPTIONS[0].key);
 
+	// useState hook to hold the map instance
+  const [mapInstance, setMapInstance] = useState(null);
+
+	// function to capture the map instance
+	const handleMapLoad = (mapArg) => {
+		const map = mapArg && mapArg.map ? mapArg.map : mapArg;
+		setMapInstance(map);
+	};
+
 	// function to flip manage locations component modal
 	const toggleManageLocations = () => {
 		setIsManageLocationsOpen(prev => !prev);
@@ -65,9 +74,11 @@ function Dashboard() {
 
 		};
 		fetchUserData();
-		// get the latitude and longitude from local storage
-		setLatitude(localStorage.getItem('latitude'));
-		setLongitude(localStorage.getItem('longitude'));
+		// get the latitude and longitude from local storage (convert to numbers when present)
+		const storedLat = localStorage.getItem('latitude');
+		const storedLng = localStorage.getItem('longitude');
+		if (storedLat) setLatitude(Number(storedLat));
+		if (storedLng) setLongitude(Number(storedLng));
 	}, []);
 
 	return(
@@ -75,6 +86,9 @@ function Dashboard() {
 			<Weathermap 
 				className="full-screen-map" 
 				activeLayer={activeLayer}
+				onMapLoad={handleMapLoad}
+				centerLat={latitude}
+				centerLng={longitude}
 			/>
 			<div className="top-bar">
 				<div className="top-left">
@@ -87,6 +101,15 @@ function Dashboard() {
 						onLayerSelect={setActiveLayer}
 					/>
 				</div>
+				<Searchlocation 
+					map={mapInstance} 
+					onSelectLocation={(lat, lng) => {
+						setLatitude(lat);
+						setLongitude(lng);
+						localStorage.setItem('latitude', lat);
+						localStorage.setItem('longitude', lng);
+					}}
+				/>
 			</div>
 
 			{/* Main App */}

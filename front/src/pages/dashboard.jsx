@@ -9,15 +9,16 @@ import '../index.css';
 
 function Dashboard() {
 
-	let latitude;
-	let longitude;
+	const [latitude, setLatitude] = useState(null);
+	const [longitude, setLongitude] = useState(null);
+	
 
 	// useEffect to fetch user data on component mount
 	useEffect(() => {
 		const fetchUserData = async () => {
 			// get the userid from local storage
 			const userid = localStorage.getItem('userid');
-
+			
 			if (!userid) {
 				// if no userid, navigate to login page
 				console.log('No userid found');
@@ -47,13 +48,9 @@ function Dashboard() {
 
 		fetchUserData();
 
-		const fetchLatitudeLongitude = async () => {
-			// get the latitude and longitude from local storage
-			latitude = localStorage.getItem('latitude');
-			longitude = localStorage.getItem('longitude');
-		};
 
-		fetchLatitudeLongitude();
+		setLatitude(localStorage.getItem('latitude'));
+		setLongitude(localStorage.getItem('longitude'));
 	}, []);
 
 	return(

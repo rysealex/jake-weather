@@ -6,6 +6,7 @@ import Favlocations from '../comp/favlocations';
 import Layerbuttons from '../comp/layerbuttons';
 import Searchlocation from '../comp/searchlocation';
 import '../index.css';
+import jakeLogo from '../jake-logo.png';
 
 // define all weather layer options
 const LAYER_OPTIONS = [
@@ -16,6 +17,9 @@ const LAYER_OPTIONS = [
 ]
 
 function Dashboard() {
+
+	// useState hook for user information
+	const [userInfo, setUserInfo] = useState([]);
 
 	// useState hooks for latitude and longitude
 	const [latitude, setLatitude] = useState(null);
@@ -64,9 +68,10 @@ function Dashboard() {
 				if (response.ok) {
 					const userData = await response.json();
 					console.log('User data:', userData);
+					setUserInfo(userData);
 				} else {
 					const errorData = await response.json();
-        			console.log('User data fetch failed:', errorData.error);
+					console.log('User data fetch failed:', errorData.error);
 				}
 			} catch (error) {
 				console.error('Error fetching user data:', error);
@@ -130,9 +135,13 @@ function Dashboard() {
 					</div>
 
 					<div className="account">
-						<div className="avatar"></div>
+						<img src={jakeLogo} alt='jake-logo' className="avatar" />
 						<div className="account-info">
-							<h4>John Doe</h4>
+							{userInfo ? (
+								<h4>{userInfo.fname} {userInfo.lname}</h4>
+							) : (
+								<h4>Unable to fetch user data</h4>
+							)}
 							<p>Account</p>
 						</div>
 					</div>

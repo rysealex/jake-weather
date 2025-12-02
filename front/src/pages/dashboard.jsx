@@ -61,62 +61,60 @@ function Dashboard() {
 
 	return(
 		<div className="dashboard-container">
-      <Weathermap className="full-screen-map" />
-      <div className="content-overlay">
-				<div className="top-bar">
-					<div className="top-left">
-						<div className="today-weather">
-							Today’s Weather <span></span>
-						</div>
+			<Weathermap className="full-screen-map" />
+			<div className="top-bar">
+				<div className="top-left">
+					<div className="today-weather">
+						Today’s Weather <span></span>
 					</div>
 				</div>
-
-				{/* Main App */}
-				<div className="weather-app">
-
-					{/* SideBar */}
-					<div className="sidebar">
-						<div>
-							<h2>Manage Locations</h2>
-							<div className="menu">
-								<button 
-									id="manageBtn" 
-									onClick={toggleManageLocations}
-								> 
-									Add/Remove 
-								</button>
-							</div>
-						</div>
-
-						<div className="account">
-							<div className="avatar"></div>
-							<div className="account-info">
-								<h4>John Doe</h4>
-								<p>Account</p>
-							</div>
-						</div>
-					</div>
-					{/* SideBar */}
-
-					{/* Main */}
-					<div className="main">
-						<div className="main-header">
-							<h2>Weekly Weather</h2>
-							<Favlocations />
-						</div>
-						{latitude && longitude && <Weeklyweatherdata latitude={latitude} longitude={longitude} />}
-						<div className="footer">J.A.K.E Weather Dashboard</div>
-					</div>
-					{/* Main */}
-				</div>
-				{/* Main App */}
-
-				{/* Modal (Manage Locations) */}
-				<Managelocations 
-					isOpen={isManageLocationsOpen}
-					onClose={toggleManageLocations} 
-				/>
 			</div>
+
+			{/* Main App */}
+			<div className="weather-app">
+
+				{/* SideBar */}
+				<div className="sidebar">
+					<div>
+						<h2>Manage Locations</h2>
+						<div className="menu">
+							<button 
+								id="manageBtn" 
+								onClick={toggleManageLocations}
+							> 
+								Add/Remove 
+							</button>
+						</div>
+					</div>
+
+					<div className="account">
+						<div className="avatar"></div>
+						<div className="account-info">
+							<h4>John Doe</h4>
+							<p>Account</p>
+						</div>
+					</div>
+				</div>
+				{/* SideBar */}
+
+				{/* Main */}
+				<div className="main">
+					<div className="main-header">
+						<h2>Weekly Weather</h2>
+						<Favlocations />
+					</div>
+					{latitude && longitude && <Weeklyweatherdata latitude={latitude} longitude={longitude} />}
+					<div className="footer">J.A.K.E Weather Dashboard</div>
+				</div>
+				{/* Main */}
+			</div>
+			{/* Main App */}
+
+			{/* Modal (Manage Locations) */}
+			<Managelocations 
+				isOpen={isManageLocationsOpen}
+				onClose={toggleManageLocations} 
+			/>
 		</div>
 	);
 };

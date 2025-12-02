@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import Favlocations from '../comp/favlocations';
 import '../index.css';
 
-function Managelocations() {
+function Managelocations({ isOpen, onClose }) {
 
 	// useState hooks for manage locations inputs
 	const [city, setCity] = useState('');
@@ -34,6 +34,31 @@ function Managelocations() {
     localStorage.removeItem('locationid');
 
   }, []);
+
+	// function to clear all the location inputsa and error/success messages
+	const clearInputs = () => {
+		setCity('');
+		setState('');
+		setZip('');
+		setCityError('');
+		setStateError('');
+		setZipError('');
+		setGeneralError('');
+		setSuccessMessage('');
+		// remove the locationid from local storage
+		localStorage.removeItem('locationid');
+	};
+
+	// function to handle the close manage locations component modal
+	const handleCloseModal = () => {
+		clearInputs();
+		onClose();
+	};
+
+	// only render manage locations component if opened
+	if (!isOpen) {
+		return null; 
+	}
 
 	// function to get latitude and longitude using Google Geocoding API
 	const getCoord = async (city, state, zip) => {
@@ -338,7 +363,13 @@ function Managelocations() {
 						</div>
 					</div>
 				</div>
-				<div className="close-modal" id="closeModalBtn">x</div>
+				<div 
+					className="close-modal" 
+					id="closeModalBtn"
+					onClick={handleCloseModal}
+				>
+					x
+				</div>
 			</div>
 		</div>
 	);

@@ -1,4 +1,4 @@
-import { useState, useEffect, act } from 'react';
+import { useState, useEffect } from 'react';
 import { APIProvider, Map, AdvancedMarker, MapControl, ControlPosition } from '@vis.gl/react-google-maps';
 import Searchlocation from './searchlocation.jsx';
 import Openweatherlayer from './openweatherlayer.jsx';
@@ -12,7 +12,7 @@ const LAYER_OPTIONS = [
 	{ key: 'temp_new', name: 'Temperature', icon: '🌡️' },
 ]
 
-function Weathermap() {
+function Weathermap({ className }) {
 
 	// useState hooks for geolocation
 	const [userPos, setUserPos] = useState(null);
@@ -33,6 +33,7 @@ function Weathermap() {
 						lat: position.coords.latitude,
 						lng: position.coords.longitude,
 					});
+					// store the latitude and longitude in local storage
 					localStorage.setItem('latitude', position.coords.latitude);
 					localStorage.setItem('longitude', position.coords.longitude);
 				},
@@ -47,50 +48,47 @@ function Weathermap() {
 	}, []);
 
 	return(
-		<div>
-			<h1>Weather Map Component</h1>
-			<div style={{ height: '850px', width: '70%', margin: ' auto' }}>
-				{geolocationError && (
-					<div style={{ color: 'red' }}>
-						Error fetching geolocation: {geolocationError}
-					</div>
-				)}
-				<APIProvider 
-					apiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
-					libraries={['places']}
+		<div className={className}>
+			{geolocationError && (
+				<div style={{ color: 'red' }}>
+					Error fetching geolocation: {geolocationError}
+				</div>
+			)}
+			<APIProvider 
+				apiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
+				libraries={['places']}
+			>
+				<Map
+					defaultCenter={userPos || mapPos}
+					defaultZoom={15}
+					mapId={process.env.REACT_APP_GOOGLE_MAPS_MAP_ID}
+					disableDefaultUI={true}
 				>
-					<Map
-						defaultCenter={userPos || mapPos}
-						defaultZoom={15}
-						mapId={process.env.REACT_APP_GOOGLE_MAPS_MAP_ID}
-						disableDefaultUI={true}
-					>
-						<MapControl position={ControlPosition.TOP_RIGHT}>
-							<Searchlocation />
-						</MapControl>
-						<MapControl position={ControlPosition.LEFT_TOP}>
-							<Layerbuttons 
-								options={LAYER_OPTIONS}
-								activeLayer={activeLayer}
-								onLayerSelect={setActiveLayer}
-							/>
-						</MapControl>
-						{activeLayer !== 'none' && (
-							<Openweatherlayer 
-								layer={activeLayer}
-							/>
-						)}
-						{userPos && (
-							<AdvancedMarker
-								position={userPos}
-								title="Your Current Location"
-							>
-								<div className="user-location-dot" />
-							</AdvancedMarker>
-						)}
-					</Map>
-				</APIProvider>
-			</div>
+					<MapControl position={ControlPosition.TOP_RIGHT}>
+						<Searchlocation />
+					</MapControl>
+					<MapControl position={ControlPosition.LEFT_TOP}>
+						<Layerbuttons 
+							options={LAYER_OPTIONS}
+							activeLayer={activeLayer}
+							onLayerSelect={setActiveLayer}
+						/>
+					</MapControl>
+					{activeLayer !== 'none' && (
+						<Openweatherlayer 
+							layer={activeLayer}
+						/>
+					)}
+					{userPos && (
+						<AdvancedMarker
+							position={userPos}
+							title="Your Current Location"
+						>
+							<div className="user-location-dot" />
+						</AdvancedMarker>
+					)}
+				</Map>
+			</APIProvider>
 		</div>
 	);
 };

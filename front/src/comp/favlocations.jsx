@@ -6,6 +6,12 @@ function Favlocations() {
 	// useState hook for favorite locations
 	const [favlocations, setFavlocations] = useState([]);
 
+	// function to handle what happens when a favorite location button is clicked
+  const handleLocationClick = (location) => {
+		// set the selected locationid in local storage
+		localStorage.setItem('locationid', location.locationid);
+  };
+
 	// useEffect to fetch favorite locations on component mount
 	useEffect(() => {
 		const fetchFavlocations = async () => {
@@ -30,6 +36,7 @@ function Favlocations() {
 				if (response.ok) {
 					const favlocationsData = await response.json();
 					console.log('Favorite locations:', favlocationsData);
+					setFavlocations(favlocationsData);
 				} else {
 					const errorData = await response.json();
         	console.log('Favorite locations fetch failed:', errorData.error);
@@ -45,7 +52,23 @@ function Favlocations() {
   return(
 		<div className="favorites-wrapper">
 			<div className="favorites-title">⭐ Favorited Locations</div>
-			<div className="favorites" id="favorites"></div>
+				<div className="favorites" id="favorites">
+					<div className="favorites" id="favorites">
+					{favlocations.length > 0 ? (
+						favlocations.map((location) => (
+							<button 
+								key={location.locationid}
+								className="favorite-item"
+								onClick={() => handleLocationClick(location)}
+							>
+								{location.city}, {location.state}
+							</button>
+						))
+					) : (
+						<p>No favorite locations saved</p>
+					)}
+				</div>
+			</div> 
 		</div>
 	);
 };

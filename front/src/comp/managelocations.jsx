@@ -135,8 +135,13 @@ function Managelocations() {
 	const handleDeleteLocation = async (e) => {
 		e.preventDefault();
 		
-		// get the locationid from the selected location
-		const locationid = 3;
+		// get the locationid from the selected location in local storage
+		const locationid = localStorage.getItem('locationid');
+
+		if (!locationid) {
+			setGeneralError('No location selected for deletion');
+			return;
+		}
 
 		// proceed to delete location with API calls
 		try {
@@ -175,8 +180,13 @@ function Managelocations() {
 		setGeneralError("");
 		setSuccessMessage("");
 		
-		// get the locationid from the selected location
-		const locationid = 4;
+		// get the locationid from the selected location in local storage
+		const locationid = localStorage.getItem('locationid');
+
+		if (!locationid) {
+			setGeneralError('No location selected for deletion');
+			return;
+		}
 
 		let hasError = false;
 
@@ -220,14 +230,14 @@ function Managelocations() {
 			return; // stop if there are validation errors
 		}
 
-		// proceed to delete location with API calls
+		// proceed to edit location with API calls
 		try {
 			// step 1: get the latitude and longitude from the location data
 			const latitude = 30.2672;
 			const longitude = 97.7431;
 
 			// step 2: edit the favorite location
-			const ediResponse = await fetch(`http://localhost:5000/favlocations/edit/${locationid}`, {
+			const editResponse = await fetch(`http://localhost:5000/favlocations/edit/${locationid}`, {
 				method: 'PUT',
 				headers: {
 					'Content-Type': 'application/json',
@@ -235,7 +245,7 @@ function Managelocations() {
 				body: JSON.stringify({ latitude, longitude, city, state, zip }),
 			});
 			// check if response is ok
-			if (ediResponse.ok) {
+			if (editResponse.ok) {
 				setCity('');
 				setState('');
 				setZip('');
@@ -244,14 +254,14 @@ function Managelocations() {
 				setTimeout(() => {
 					setSuccessMessage('');
 				}, 4000);
-				const editData = await ediResponse.json();
+				const editData = await editResponse.json();
 				console.log('Favorite location edited successfully:', editData);
 			} else {
 				setCity('');
 				setState('');
 				setZip('');
 				cityInputRef.current.focus();
-				const errorData = await ediResponse.json();
+				const errorData = await editResponse.json();
 				setGeneralError(errorData.error || 'Failed to edit favorite location');
 			}
 		} catch (error) {

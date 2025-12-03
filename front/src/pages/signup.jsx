@@ -180,14 +180,14 @@ function Signup() {
 	};
 
 	return(
-		<div>
-			<h1>Signup Page</h1>
-			<form onSubmit={handleSubmit}>
-				<input type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} required ref={usernameInputRef}/>
-				{usernameError && <p>{usernameError}</p>}
+		<div className="sign-up-wrapper">
+			<h1 className="sign-up-header">Welcome to J.A.K.E. Weather!</h1>
+			<form className="sign-up-wrapper form" onSubmit={handleSubmit}>
 				<input type="text" placeholder="First Name" value={fname} onChange={(e) => setFname(e.target.value)} required />
 				<input type="text" placeholder="Last Name" value={lname} onChange={(e) => setLname(e.target.value)} required />
 				<input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required />
+				<input type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} required ref={usernameInputRef}/>
+				{usernameError && <p>{usernameError}</p>}	
 				<input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required ref={passwordInputRef}/>
 				{passwordError && <p>{passwordError}</p>}
 				<input type="text" placeholder="City" value={city} onChange={(e) => setCity(e.target.value)} required />
@@ -195,7 +195,7 @@ function Signup() {
 				<input type="text" placeholder="Zip" value={zip} onChange={(e) => setZip(e.target.value)} required ref={zipInputRef}/>
 				{generalError && <p>{generalError}</p>}
 				{successMessage && <p>{successMessage}</p>}
-				<button type="submit">Sign Up</button>
+				<button id="signupButton" type="submit">Sign Up</button>
 			</form>
 		</div>
 	);

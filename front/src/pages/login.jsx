@@ -120,16 +120,24 @@ function Login() {
 	};
 
 	return(
-		<div>
-			<h1>Login Page</h1>
-			<form onSubmit={handleSubmit}>
+		<div className="log-in-wrapper">
+			<h1 className="log-in-header">J.A.K.E. Weather</h1>
+			<form className="log-in-wrapper form" onSubmit={handleSubmit}>
 				<input type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} required ref={usernameInputRef} />
 				{usernameError && <p>{usernameError}</p>}
 				<input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required ref={passwordInputRef} />
 				{passwordError && <p>{passwordError}</p>}
 				{generalError && <p>{generalError}</p>}
-				<button type="submit">Log In</button>
+				<div className="log-in-wrapper button">
+					<button class="log-in-button" type="submit">Log In</button>
+					<button class="log-in-button" type="submit">Forgot Password</button>	
+				</div>
+				<p>Don't have an account?</p>
+				<button id="loginButton" type="submit">Sign Up</button>
 			</form>
+			<footer className="log-in-footer">
+				<p>Est. 2025</p>
+			</footer>
 		</div>
 	);
 };

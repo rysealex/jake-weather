@@ -33,7 +33,33 @@ const formatDay = (dateString) => {
 	return date.toLocaleDateString('en-US', { weekday: 'short' });
 };
 
-function Weeklyweatherdata({ latitude, longitude }) {
+// helper function to fetch the city name from latitude and longitude using Google Geocoding API
+const fetchCity = async (latitude, longitude) => {
+	if (!process.env.REACT_APP_GOOGLE_MAPS_API_KEY) return "API Key Failed";
+	try {
+		const result = await fetch(
+			`https://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`
+		);
+
+		const data = await result.json();
+		if (!data.results || data.results.length === 0) return "Unknown Location";
+
+		const components = data.results[0].address_components;
+		// fetch city details from components
+		const city = 
+			components.find(c => c.types.includes("locality"))?.long_name ||
+			components.find(c => c.types.includes("administrative_area_level_2"))?.long_name ||
+			components.find(c => c.types.includes("postal_town"))?.long_name ||
+			"Unknown City";
+
+		return city;
+	} catch(error) {
+		console.error("Error fetching city from Google Geoding API:", error);
+		return "Unknown Location";
+	}
+};
+
+function Weeklyweatherdata({ latitude, longitude, onIconUpdate, onCityUpdate }) {
 
 	// useState hook for weekly weather data
 	const [weeklyWeatherData, setWeeklyWeatherData] = useState([]);
@@ -56,6 +82,17 @@ function Weeklyweatherdata({ latitude, longitude }) {
 						const data = await response.json();
 						setWeeklyWeatherData(data);
 						console.log('Weather Data:', data);
+						// store current day weather icon in local storage
+						const currentDayWeather = data?.weekly?.[0];
+						if (currentDayWeather) {
+							const { icon } = getWeatherIcon(currentDayWeather.weather_code);
+							localStorage.setItem('currentDayWeatherIcon', icon);
+							if (onIconUpdate) onIconUpdate(icon);
+						}
+						// fetch the selected city from latitude and longitude and store in local storage
+						const selectedCity = await fetchCity(latitude, longitude);
+						localStorage.setItem('selectedCity', selectedCity);
+						if (onCityUpdate) onCityUpdate(selectedCity);
 					} else {
 						const errorData = await response.json();
 						console.error('Error fetching weather data:', errorData);
@@ -75,7 +112,7 @@ function Weeklyweatherdata({ latitude, longitude }) {
 	return(
 		<div className="locations">
 			{weeklyForecast.length === 0 ? (
-				<p>Loading weekly weather data...</p>
+				<p>Loading weekly weather...</p>
 			) : (
 				weeklyForecast.map((day, index) => {
 					const { icon, description } = getWeatherIcon(day.weather_code);

@@ -21,9 +21,11 @@ function Dashboard() {
 	// useState hook for user information
 	const [userInfo, setUserInfo] = useState([]);
 
-	// useState hooks for latitude and longitude
+	// useState hooks for latitude, longitude, current day weather icon, and selected city
 	const [latitude, setLatitude] = useState(null);
 	const [longitude, setLongitude] = useState(null);
+	const [currentDayWeatherIcon, setCurrentDayWeatherIcon] = useState(null);
+	const [selectedCity, setSelectedCity] = useState(null);
 
 	// useState hooks for toggling manage locations component modal
 	const [isManageLocationsOpen, setIsManageLocationsOpen] = useState(false);
@@ -84,6 +86,12 @@ function Dashboard() {
 		const storedLng = localStorage.getItem('longitude');
 		if (storedLat) setLatitude(Number(storedLat));
 		if (storedLng) setLongitude(Number(storedLng));
+		// get the current day weather icon from local storage
+		const storedCurrentDayWeatherIcon = localStorage.getItem('currentDayWeatherIcon');
+		if (storedCurrentDayWeatherIcon) setCurrentDayWeatherIcon(storedCurrentDayWeatherIcon);
+		// get the selected city from local storage
+		const storedSelectedCity = localStorage.getItem('selectedCity');
+		if (storedSelectedCity) setSelectedCity(storedSelectedCity);
 	}, []);
 
 	return(
@@ -98,7 +106,10 @@ function Dashboard() {
 			<div className="top-bar">
 				<div className="top-left">
 					<div className="today-weather">
-						Today’s Weather <span></span>
+						{currentDayWeatherIcon && (
+							<span>{currentDayWeatherIcon}</span>
+						)}
+						{selectedCity ? `Today’s Weather - ${selectedCity}` : "Today's Weather" }
 					</div>
 					<Layerbuttons 
 						options={LAYER_OPTIONS}
@@ -154,7 +165,7 @@ function Dashboard() {
 						<h2>Weekly Weather</h2>
 					</div>
 					<div className='main-content-row'>
-						{latitude && longitude && <Weeklyweatherdata latitude={latitude} longitude={longitude} />}
+						{latitude && longitude && <Weeklyweatherdata latitude={latitude} longitude={longitude} onIconUpdate={setCurrentDayWeatherIcon} onCityUpdate={setSelectedCity} />}
 						<Favlocations />
 					</div>
 					<div className="footer">J.A.K.E Weather Dashboard</div>

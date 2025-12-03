@@ -39,6 +39,9 @@ function Dashboard() {
 	// useState hook to track when to refresh favlocation sidebar component
 	const [favRefreshTrigger, setFavRefreshTrigger] = useState(0);
 
+	// useState hook to clear the currently selected favorite location
+	const [clearFavSelection, setClearFavSelection] = useState(0);
+
 	// function to capture the map instance
 	const handleMapLoad = (mapArg) => {
 		const map = mapArg && mapArg.map ? mapArg.map : mapArg;
@@ -105,6 +108,10 @@ function Dashboard() {
 				onMapLoad={handleMapLoad}
 				centerLat={latitude}
 				centerLng={longitude}
+				onUserLocation={(lat, lng) => {
+					setLatitude(lat);
+					setLongitude(lng);
+				}}
 			/>
 			<div className="top-bar">
 				<div className="top-left">
@@ -127,6 +134,7 @@ function Dashboard() {
 						setLongitude(lng);
 						localStorage.setItem('latitude', lat);
 						localStorage.setItem('longitude', lng);
+						setClearFavSelection(prev => prev + 1);
 					}}
 				/>
 			</div>
@@ -184,6 +192,7 @@ function Dashboard() {
 				<div className="favorites-sidebar">
 					<Favlocations 
 					 	refreshTrigger={favRefreshTrigger}
+						clearSelectionTrigger={clearFavSelection}
 						onLocationSelect={(location) => {
 							setLatitude(location.latitude);
 							setLongitude(location.longitude);

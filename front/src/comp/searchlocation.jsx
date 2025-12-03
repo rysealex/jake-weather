@@ -39,6 +39,8 @@ const Searchlocation = ({ map, onSelectLocation }) => {
 
         listener = newAutocomplete.addListener('place_changed', () => {
           const place = newAutocomplete.getPlace();
+          // clear search location search bar upon place change
+          if (inputRef.current) inputRef.current.value = "";
           handlePlaceResult(place);
         });
 
@@ -74,6 +76,11 @@ const Searchlocation = ({ map, onSelectLocation }) => {
 
   // function to handle a successful place result
   const handlePlaceResult = (place) => {
+
+    // remove selected and modal city from local storage
+    localStorage.removeItem("selectedCity");
+    localStorage.removeItem("modalCity");
+
     if (map && place.geometry && place.geometry.location) {
       // // center the map on the selected place
       // map.setCenter(place.geometry.location);

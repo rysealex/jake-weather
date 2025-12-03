@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import '../index.css';
 
-function Favlocations({ onLocationSelect, refreshTrigger, onFavCountUpdate }) {
+function Favlocations({ onLocationSelect, refreshTrigger, onFavCountUpdate, clearSelectionTrigger }) {
 
 	// useState hook for favorite locations
 	const [favlocations, setFavlocations] = useState([]);
@@ -71,6 +71,12 @@ function Favlocations({ onLocationSelect, refreshTrigger, onFavCountUpdate }) {
     localStorage.removeItem('selectedCity');
 
 	}, []);
+
+	useEffect(() => {
+		// un-select the currently selected location on search location trigger
+		setSelectedLocation(null);
+		
+	}, [clearSelectionTrigger]);
 
   return(
 		<div className="favorites-wrapper">

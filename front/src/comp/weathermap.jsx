@@ -2,14 +2,11 @@ import { useState, useEffect, useRef } from 'react';
 import { APIProvider, Map, AdvancedMarker } from '@vis.gl/react-google-maps';
 import Openweatherlayer from './openweatherlayer.jsx';
 
-function Weathermap({ className, activeLayer, onMapLoad, centerLat, centerLng }) {
+function Weathermap({ className, activeLayer, onMapLoad, centerLat, centerLng, onUserLocation }) {
 
 	// useState hooks for geolocation
 	const [userPos, setUserPos] = useState(null);
 	const [geolocationError, setGeolocationError] = useState(null);
-
-	// default map position (default to San Francisco)
-	const mapPos = { lat: 37.7749, lng: -122.4194 }; 
 
 	const mapRef = useRef(null);
 
@@ -25,6 +22,10 @@ function Weathermap({ className, activeLayer, onMapLoad, centerLat, centerLng })
 					// store the latitude and longitude in local storage
 					localStorage.setItem('latitude', position.coords.latitude);
 					localStorage.setItem('longitude', position.coords.longitude);
+					// update the user latitude and longitude of user
+					if (onUserLocation) {
+						onUserLocation(position.coords.latitude, position.coords.longitude);
+					}
 				},
 				(error) => {
 					setGeolocationError(error.message);
@@ -60,8 +61,8 @@ function Weathermap({ className, activeLayer, onMapLoad, centerLat, centerLng })
 				libraries={['places']}
 			>
 				<Map
-					defaultCenter={userPos || mapPos}
-					defaultZoom={15}
+					defaultCenter={userPos ?? { lat: 39.5, lng: -98.35 }}
+					defaultZoom={userPos ? 15 : 4}
 					mapId={process.env.REACT_APP_GOOGLE_MAPS_MAP_ID}
 					disableDefaultUI={true}
 					onLoad={(mapArg) => {
@@ -70,12 +71,6 @@ function Weathermap({ className, activeLayer, onMapLoad, centerLat, centerLng })
 							mapRef.current = map;
 							if (onMapLoad) onMapLoad(mapArg);
 						}
-						// mapRef.current = map;
-						// // apply initial center if provided
-						// if (centerLat != null && centerLng != null) {
-						// 	try { mapRef.current.setCenter({ lat: Number(centerLat), lng: Number(centerLng) }); } catch (e) {}
-						// }
-						// if (onMapLoad) onMapLoad(mapArg);
 					}}
 				>
 					{activeLayer !== 'none' && (

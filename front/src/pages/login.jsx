@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../index.css';
 
@@ -23,6 +23,16 @@ function Login() {
 
 	// password complexity regex
 	const passwordRegex = /^(?=.*[A-Z])(?=.*[0-9])(?=.*[^a-zA-Z0-9\s]).*$/;
+
+	// useEffect to remove all data in local storage on component mount
+	useEffect(() => {
+		localStorage.removeItem('currentDayWeatherIcon');
+		localStorage.removeItem('latitude');
+		localStorage.removeItem('longitude');
+		localStorage.removeItem('userid');
+		localStorage.removeItem('selectedCity');
+		localStorage.removeItem('modalCity');
+	}, []);
 
 	// handle the login attempt
 	const handleSubmit = async (e) => {

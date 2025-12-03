@@ -12,10 +12,11 @@ function Favlocations({ onLocationSelect, refreshTrigger, onFavCountUpdate }) {
 	// function to handle what happens when a favorite location button is clicked
   const handleLocationClick = (location) => {
 		setSelectedLocation(location);
-		// store the selected location latitude, longitude, and city in local storage
+		// store the selected location latitude, longitude, city, and modal city in local storage
 		localStorage.setItem('latitude', location.latitude);
 		localStorage.setItem('longitude', location.longitude);
 		localStorage.setItem('selectedCity', location.city);
+		localStorage.setItem('modalCity', location.city);
 		// udpate the location selected
 		if (onLocationSelect) {
 			onLocationSelect(location);

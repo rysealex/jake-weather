@@ -59,8 +59,8 @@ function Managelocations({ isOpen, onClose, onRefresh }) {
 	const handleCloseModal = () => {
 		clearInputs();
 		onClose();
-		// remove selected city from local storage
-		localStorage.removeItem('selectedCity');
+		// remove modal city from local storage
+		localStorage.removeItem('modalCity');
 	};
 
 	// only render manage locations component if opened

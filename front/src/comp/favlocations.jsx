@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import '../index.css';
 
-function Favlocations({ onLocationSelect, refreshTrigger }) {
+function Favlocations({ onLocationSelect, refreshTrigger, onFavCountUpdate }) {
 
 	// useState hook for favorite locations
 	const [favlocations, setFavlocations] = useState([]);
@@ -11,8 +11,15 @@ function Favlocations({ onLocationSelect, refreshTrigger }) {
 
 	// function to handle what happens when a favorite location button is clicked
   const handleLocationClick = (location) => {
-		onLocationSelect(location);
 		setSelectedLocation(location);
+		// store the selected location latitude, longitude, and city in local storage
+		localStorage.setItem('latitude', location.latitude);
+		localStorage.setItem('longitude', location.longitude);
+		localStorage.setItem('selectedCity', location.city);
+		// udpate the location selected
+		if (onLocationSelect) {
+			onLocationSelect(location);
+		}
   };
 
 	const fetchFavlocations = async () => {
@@ -38,6 +45,10 @@ function Favlocations({ onLocationSelect, refreshTrigger }) {
 				const favlocationsData = await response.json();
 				console.log('Favorite locations:', favlocationsData);
 				setFavlocations(favlocationsData);
+				// update the current number of favorite locations
+				if (onFavCountUpdate) {
+          onFavCountUpdate(favlocationsData.length);
+        }
 			} else {
 				const errorData = await response.json();
 				console.log('Favorite locations fetch failed:', errorData.error);
@@ -47,32 +58,37 @@ function Favlocations({ onLocationSelect, refreshTrigger }) {
 		}
 	};
 
-	// useEffect to fetch favorite locations on component mount
+	// useEffect to fetch favorite locations
 	useEffect(() => {
 		fetchFavlocations();
 
 	}, [refreshTrigger]); // hook runs whenever refreshTrigger changes
 
+	useEffect(() => {
+		// reset selected location in local storage on component mount
+		setSelectedLocation(null);
+    localStorage.removeItem('selectedCity');
+
+	}, []);
+
   return(
 		<div className="favorites-wrapper">
 			<div className="favorites-title"><h2>⭐ Favorite Locations</h2></div>
 				<div className="favorites" id="favorites">
-					<div className="favorites" id="favorites">
-					{favlocations.length > 0 ? (
-						favlocations.map((location) => (
-							<button 
-								key={location.locationid}
-								className={selectedLocation && selectedLocation.locationid === location.locationid ? "favorite-item selected" : "favorite-item"}
-								onClick={() => handleLocationClick(location)}
-							>
-								{location.city}, {location.state}
-							</button>
-						))
-					) : (
-						<p>No favorite locations saved</p>
-					)}
-				</div>
-			</div> 
+				{favlocations.length > 0 ? (
+					favlocations.map((location) => (
+						<button 
+							key={location.locationid}
+							className={selectedLocation && selectedLocation.locationid === location.locationid ? "favorite-item selected" : "favorite-item"}
+							onClick={() => handleLocationClick(location)}
+						>
+							{location.city}, {location.state}
+						</button>
+					))
+				) : (
+					<p>No favorite locations saved</p>
+				)}
+			</div>
 		</div>
 	);
 };

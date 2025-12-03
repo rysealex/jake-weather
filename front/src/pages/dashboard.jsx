@@ -36,6 +36,9 @@ function Dashboard() {
 	// useState hook to hold the map instance
   const [mapInstance, setMapInstance] = useState(null);
 
+	// useState hook to track when to refresh favlocation sidebar component
+	const [favRefreshTrigger, setFavRefreshTrigger] = useState(0);
+
 	// function to capture the map instance
 	const handleMapLoad = (mapArg) => {
 		const map = mapArg && mapArg.map ? mapArg.map : mapArg;
@@ -179,7 +182,14 @@ function Dashboard() {
 
 				{/* SideBar Right */}
 				<div className="favorites-sidebar">
-					<Favlocations />
+					<Favlocations 
+					 	refreshTrigger={favRefreshTrigger}
+						onLocationSelect={(location) => {
+							setLatitude(location.latitude);
+							setLongitude(location.longitude);
+							setSelectedCity(location.city);
+						}}
+					/>
 					<div className="footer">J.A.K.E. Weather © 2025</div>
 				</div>
 				{/* SideBar Right */}
@@ -189,7 +199,9 @@ function Dashboard() {
 			{/* Modal (Manage Locations) */}
 			<Managelocations 
 				isOpen={isManageLocationsOpen}
-				onClose={toggleManageLocations} 
+				onClose={toggleManageLocations}
+				refreshTrigger={favRefreshTrigger}
+  			onRefresh={() => setFavRefreshTrigger(prev => prev + 1)}
 			/>
 		</div>
 	);

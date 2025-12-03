@@ -203,7 +203,7 @@ body {
   align-items: center;
   gap: 8px;
 }
-.avatar { width: 32px; height: 32px; border-radius: 50%; background: #ccc; }
+.avatar { width: 32px; height: 32px; border-radius: 50%; }
 .account-info h4 { font-size: 12px; margin-bottom: 1px; }
 .account-info p { font-size: 10px; color: #777; }
 

@@ -2,7 +2,13 @@ import { useState, useRef, useEffect } from 'react';
 import Favlocations from '../comp/favlocations';
 import '../index.css';
 
-function Managelocations({ isOpen, onClose }) {
+function Managelocations({ isOpen, onClose, onRefresh }) {
+
+	// maximum number of favorite locations
+	const MAX_FAV_LOCATIONS = 10;
+
+	// useState hook for current number of favorite locations
+	const [currentFavCount, setCurrentFavCount] = useState(0);
 
 	// useState hooks for manage locations inputs
 	const [city, setCity] = useState('');
@@ -53,6 +59,8 @@ function Managelocations({ isOpen, onClose }) {
 	const handleCloseModal = () => {
 		clearInputs();
 		onClose();
+		// remove selected city from local storage
+		localStorage.removeItem('selectedCity');
 	};
 
 	// only render manage locations component if opened
@@ -131,15 +139,31 @@ function Managelocations({ isOpen, onClose }) {
     if (isEditing) {
 			// check if locationid found for editing
       if (!locationid) {
+				setCityError("");
+				setStateError("");
+				setZipError("");
+				cityInputRef.current.focus();
         setGeneralError('Error: Attempted to edit without a selected location ID');
         return; 
       }
     } else {
       // check if userid found for adding
       if (!userid) {
+				setCityError("");
+				setStateError("");
+				setZipError("");
+				cityInputRef.current.focus();
         setGeneralError('No userid found for adding location');
         return;
       }
+			if (currentFavCount >= MAX_FAV_LOCATIONS) {
+				setCityError("");
+				setStateError("");
+				setZipError("");
+				cityInputRef.current.focus();
+				setGeneralError(`Maximum of ${MAX_FAV_LOCATIONS} favorite locations reached`);
+				return;
+			}
     }
     
     let hasError = false;
@@ -212,6 +236,8 @@ function Managelocations({ isOpen, onClose }) {
 					setState('');
 					setZip('');
         }
+				// trigger the refresh
+				if (onRefresh) onRefresh();
 				// trigger the favlocations component fetch refresh after successful add/edit
 				setRefreshTrigger(prev => prev + 1);
 				// show success message for a short duration
@@ -260,6 +286,8 @@ function Managelocations({ isOpen, onClose }) {
 				setCity('');
         setState('');
         setZip('');
+				// trigger the refresh
+				if (onRefresh) onRefresh();
 				// trigger the favlocations component fetch refresh after successful delete
 				setRefreshTrigger(prev => prev + 1);
 				// remove locationid from local storage
@@ -284,8 +312,7 @@ function Managelocations({ isOpen, onClose }) {
 		<div className="modal" id="modal">
 			<div className="modal-content" role="dialog" aria-modal="true" aria-labelledby="manageTitle">
 				<div className="locations-list" id="locationList">
-					{/* <h3 id="manageTitle">Added Locations</h3> */}
-					<Favlocations onLocationSelect={handleLocationSelect} refreshTrigger={refreshTrigger} />
+					<Favlocations onLocationSelect={handleLocationSelect} refreshTrigger={refreshTrigger} onFavCountUpdate={setCurrentFavCount} />
 				</div>
 				<div className="location-details">
 					<div>
@@ -357,7 +384,7 @@ function Managelocations({ isOpen, onClose }) {
 								{successMessage && <p className="success">{successMessage}</p>}
 								<div className="modal-footer">
 									<button id="saveBtn" type="submit">Save</button>
-									<button id="closeBtn" onClick={handleDeleteLocation}>Delete</button>
+									<button id="closeBtn" type="button" onClick={handleDeleteLocation}>Delete</button>
 								</div>
 							</form>
 						</div>

@@ -55,7 +55,7 @@ function Favlocations({ onLocationSelect, refreshTrigger }) {
 
   return(
 		<div className="favorites-wrapper">
-			<div className="favorites-title">⭐ Favorited Locations</div>
+			<div className="favorites-title"><h2>⭐ Favorite Locations</h2></div>
 				<div className="favorites" id="favorites">
 					<div className="favorites" id="favorites">
 					{favlocations.length > 0 ? (

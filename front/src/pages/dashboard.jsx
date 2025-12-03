@@ -131,9 +131,9 @@ function Dashboard() {
 			{/* Main App */}
 			<div className="weather-app">
 
-				{/* SideBar */}
+				{/* SideBar Left */}
 				<div className="sidebar">
-					<div>
+					<div className='manage-header'>
 						<h2>Manage Locations</h2>
 						<div className="menu">
 							<button 
@@ -157,7 +157,7 @@ function Dashboard() {
 						</div>
 					</div>
 				</div>
-				{/* SideBar */}
+				{/* SideBar Left */}
 
 				{/* Main */}
 				<div className="main">
@@ -165,12 +165,24 @@ function Dashboard() {
 						<h2>Weekly Weather</h2>
 					</div>
 					<div className='main-content-row'>
-						{latitude && longitude && <Weeklyweatherdata latitude={latitude} longitude={longitude} onIconUpdate={setCurrentDayWeatherIcon} onCityUpdate={setSelectedCity} />}
-						<Favlocations />
+						{latitude && longitude && 
+							<Weeklyweatherdata 
+								latitude={latitude} 
+								longitude={longitude} 
+								onIconUpdate={setCurrentDayWeatherIcon} 
+								onCityUpdate={setSelectedCity} 
+							/>
+						}
 					</div>
-					<div className="footer">J.A.K.E Weather Dashboard</div>
 				</div>
 				{/* Main */}
+
+				{/* SideBar Right */}
+				<div className="favorites-sidebar">
+					<Favlocations />
+					<div className="footer">J.A.K.E. Weather © 2025</div>
+				</div>
+				{/* SideBar Right */}
 			</div>
 			{/* Main App */}
 

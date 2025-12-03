@@ -284,7 +284,7 @@ function Managelocations({ isOpen, onClose }) {
 		<div className="modal" id="modal">
 			<div className="modal-content" role="dialog" aria-modal="true" aria-labelledby="manageTitle">
 				<div className="locations-list" id="locationList">
-					<h3 id="manageTitle">Added Locations</h3>
+					{/* <h3 id="manageTitle">Added Locations</h3> */}
 					<Favlocations onLocationSelect={handleLocationSelect} refreshTrigger={refreshTrigger} />
 				</div>
 				<div className="location-details">

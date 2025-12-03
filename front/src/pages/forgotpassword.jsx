@@ -184,9 +184,9 @@ function ForgotPassword() {
 
 	return(
 		<div className="password-reset-wrapper">
-			<title>Reset Password</title>
+			<title>J.A.K.E. Weather - Forgot Password</title>
 			<form onSubmit={handleSubmit}>
-				<h1>Forgot your password? Reset it below.</h1>
+				<h1>Forgot your password? Reset it below</h1>
 				<label htmlFor="usernameInput">Username:</label>
 				<input id='usernameInput' type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} required ref={usernameInputRef}/>
 				{usernameError && <p>{usernameError}</p>}

@@ -102,6 +102,7 @@ function Dashboard() {
 
 	return(
 		<div className="dashboard-container">
+			<title>J.A.K.E. Weather - Dashboard</title>
 			<Weathermap 
 				className="full-screen-map" 
 				activeLayer={activeLayer}

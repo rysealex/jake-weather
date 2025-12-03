@@ -11,6 +11,10 @@ function Login() {
 	// useState hooks for login form fields
 	const [username, setUsername] = useState('');
 	const [password, setPassword] = useState('');
+
+	// useState hooks for password and confirm password visibility
+	const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+	const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
 	
 	// useState hooks for error handling
 	const [usernameError, setUsernameError] = useState('');
@@ -24,6 +28,14 @@ function Login() {
 	// password complexity regex
 	const passwordRegex = /^(?=.*[A-Z])(?=.*[0-9])(?=.*[^a-zA-Z0-9\s]).*$/;
 
+	// functions to toggle password and confirm password visibility
+	const togglePasswordVisibility = () => {
+    setIsPasswordVisible(!isPasswordVisible);
+  };
+  const toggleConfirmPasswordVisibility = () => {
+    setIsConfirmPasswordVisible(!isConfirmPasswordVisible);
+  };
+
 	// useEffect to remove all data in local storage on component mount
 	useEffect(() => {
 		localStorage.removeItem('currentDayWeatherIcon');
@@ -33,6 +45,16 @@ function Login() {
 		localStorage.removeItem('selectedCity');
 		localStorage.removeItem('modalCity');
 	}, []);
+
+	// handle the forgot password redirection
+	const handleForgotPasswordClick = () => {
+		handleNavigate('/forgot-password');
+	};
+
+	// handle the sign up redirection
+	const handleSignUpClick = () => {
+		handleNavigate('/signup');
+	};
 
 	// handle the login attempt
 	const handleSubmit = async (e) => {
@@ -120,20 +142,43 @@ function Login() {
 	};
 
 	return(
-		<div className="log-in-wrapper">
-			<h1 className="log-in-header">J.A.K.E. Weather</h1>
-			<form className="log-in-wrapper form" onSubmit={handleSubmit}>
-				<input type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} required ref={usernameInputRef} />
+		<div className="password-reset-wrapper">
+			<title>J.A.K.E. Weather - Log In</title>
+			<form onSubmit={handleSubmit}>
+				<h1>J.A.K.E. Weather</h1>
+				<label htmlFor="usernameInput">Username:</label>
+				<input id='usernameInput' type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} required ref={usernameInputRef} />
 				{usernameError && <p>{usernameError}</p>}
-				<input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required ref={passwordInputRef} />
+				<label htmlFor="passwordInput">Password:</label>
+				<div className="password-input-container">
+					<input 
+						id='passwordInput' 
+						type={isPasswordVisible ? 'text' : 'password'}
+						placeholder="********" 
+						value={password} 
+						onChange={(e) => setPassword(e.target.value)} 
+						required 
+						ref={passwordInputRef} 
+					/>
+					<button
+						type="button"
+						onClick={togglePasswordVisibility}
+						className="password-toggle-button"
+						aria-label={isPasswordVisible ? 'Hide Password' : 'Show Password'}
+					>
+						{isPasswordVisible ? '🔒' : '👁️'}
+					</button>
+				</div>
 				{passwordError && <p>{passwordError}</p>}
 				{generalError && <p>{generalError}</p>}
 				<div className="log-in-wrapper button">
 					<button class="log-in-button" type="submit">Log In</button>
-					<button class="log-in-button" type="submit">Forgot Password</button>	
+					<button class="log-in-button" type="button" onClick={handleForgotPasswordClick}>Forgot Password</button>	
 				</div>
-				<p>Don't have an account?</p>
-				<button id="loginButton" type="submit">Sign Up</button>
+				<div className='dont-have-account'>
+					<p>Don't have an account?</p>
+					<button id="signupButton" type="button" onClick={handleSignUpClick}>Sign Up</button>
+				</div>
 			</form>
 			<footer className="log-in-footer">
 				<p>Est. 2025</p>

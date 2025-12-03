@@ -527,8 +527,6 @@ body {
   position: relative;
   /* Ensure the container takes up the full width, especially if your form uses flex/grid */
   width: 100%; 
-  /* You may need to adjust margin based on your general form styling */
-  margin-bottom: 10px; 
 }
 
 /* 2. Style the input field inside the container */
@@ -589,11 +587,10 @@ body {
 /* Page Wrapper*/
 .log-in-wrapper {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
-  padding: 60px;
+  padding-bottom: 25px;
   font-family: "Arial", sans-serif;
-  background: #f5f7fa;
 }
 
 /* Form Container*/
@@ -638,17 +635,24 @@ body {
   font-size: 16px;
   align-items: center;
 }
+.log-in-wrapper button:hover {
+  background-color: #4267b2;
+}
 
 .log-in-button{
   background-color: #3b63d9;
 }
 
-#loginButton {
+#loginButton, #signupButton {
   background-color: #3b63d9;
 }
 
-#loginButton:hover {
+#loginButton:hover, #signupButton {
   background-color: #4267b2;
+}
+.dont-have-account {
+  margin: 0 auto;
+  text-align: center;
 }
 
 /* Responsive */
@@ -688,16 +692,49 @@ body {
   border-radius: 12px;
   box-shadow: 0px 4px 18px rgba(0, 0, 0, 0.1);
   width: 100%;
-  max-width: 380px;
+  max-width: 600px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
 }
+#sign-up-wrapper-wide form {
+  max-width: 600px;
+}
+.form-group-narrow {
+  flex-grow: 0; 
+  width: 100px; 
+  max-width: 100%;
+}
+.form-group-narrow select {
+  width: 44px;
+}
+.zip-group-left {
+  max-width: 250px;
+  margin: 0; 
+}
+.form-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  width: 100%;
+  margin-bottom: 5px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+.form-group .password-input-container {
+  width: 100%;
+}
 
 /* Inputs */
 .sign-up-wrapper input {
-  margin-bottom: 15px;
+  margin-bottom: 0;
+  width: 100%;
   padding: 12px 12px;
   border: 1px solid #dcdfe6;
   border-radius: 8px;
@@ -710,6 +747,10 @@ body {
 .sign-up-wrapper input:focus {
   border-color: #7aa7ff;
   outline: none;
+}
+.full-width-input {
+  flex: 2;
+  max-width: 100%;
 }
 
 /* Buttons */
@@ -726,6 +767,8 @@ body {
 
 #signupButton {
   background-color: #3b63d9;
+  margin-top: 20px;
+  align-self: center;
 }
 
 #signupButton:hover {

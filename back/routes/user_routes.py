@@ -113,3 +113,12 @@ def update_user_password(userid):
         return jsonify({"message": "Password updated successfully"}), 200
     else:
         return jsonify({"error": "Failed to update password"}), 500
+    
+@user_bp.route('/delete/<int:userid>', methods=['DELETE'])
+def delete_user(userid):
+    success = user_model.delete_user(userid)
+
+    if success:
+        return jsonify({"message": "User successfully deleted"}), 200
+    else:
+        return jsonify({"error": "Failed to delete"}), 500

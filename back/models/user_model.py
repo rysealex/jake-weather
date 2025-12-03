@@ -182,3 +182,28 @@ class UserModel:
                 cursor.close()
             if conn:
                 conn.close()
+
+    """Function to delete a user"""
+    def delete_user(self, userid):
+        conn = None
+        cursor = None
+        try:
+            conn = get_db_connection()
+            cursor = conn.cursor()
+
+            sql = """
+            DELETE FROM user WHERE userid = %s
+            """
+            cursor.execute(sql, ( userid))
+            conn.commit()
+            return True # return true if user was deleted
+        except Error as e:
+            print(f"Error deleting user: {e}")
+            if conn:
+                conn.rollback()
+            return False
+        finally:
+            if cursor:
+                cursor.close()
+            if conn:
+                conn.close()

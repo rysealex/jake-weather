@@ -50,6 +50,51 @@ function Signup() {
     setIsConfirmPasswordVisible(!isConfirmPasswordVisible);
   };
 
+	// function to get latitude and longitude using Google Geocoding API
+	const getCoord = async (city, state, zip) => {
+		if (!process.env.REACT_APP_GOOGLE_MAPS_API_KEY) {
+			throw new Error("Google Maps API key is missing or not configured correctly.");
+		}
+
+		// construct the address query string
+		const address = `${city}, ${state}, ${zip}`;
+		const geocodeUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`;
+
+		// attempt to get latitude and longitude
+		try {
+			const response = await fetch(geocodeUrl);
+			const data = await response.json();
+			// check if status is ok and latitude and longitude returned
+			if (data.status === 'OK' && data.results.length > 0) {
+				const location = data.results[0].geometry.location;
+				console.log(`Latitude: ${location.lat}, Longitude: ${location.lng}`);
+				return {
+					latitude: location.lat,
+					longitude: location.lng
+				};
+			} else {
+				throw new Error(`Geocoding failed. Status: ${data.status}. Please check location details.`);
+			}
+		} catch (error) {
+			throw new Error(`Network or Google Geocoding API error: ${error.message}`);
+		};
+	};
+
+	// function to delete a user
+	const deleteUser = async (userid) => {
+		try {
+			const deleteResponse = await fetch(`http://localhost:5000/user/delete/${userid}`, {
+				method: 'DELETE',
+			});
+			// check if delete response is not ok (failed to delete user)
+			if (!deleteResponse.ok) {
+				alert("CRITICAL ERROR: Failed to rollback user");
+			}
+		} catch (deleteError) {
+			alert("CRITICAL ERROR: Failed to rollback user: ", deleteError);
+		}
+	};
+
 	// handle the signup attempt
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -152,15 +197,38 @@ function Signup() {
 			}
 
 			// step 2: create the user
-      const response = await fetch('http://localhost:5000/user/add', {
+      const userResponse = await fetch('http://localhost:5000/user/add', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ username, fname, lname, email, password, city, state, zip }),
       });
-      // check if the response is ok
-      if (response.ok) {
+      // check if the user response is not ok
+      if (!userResponse.ok) {
+				setUsername("");
+				setFname("");
+				setLname("");
+				setEmail("");
+        setPassword("");
+				setConfirmPassword("");
+				setCity("");
+				setState("");
+				setZip("");
+				fnameInputRef.current.focus();
+        const errorData = await userResponse.json();
+        setGeneralError(errorData.error || 'Failed to add user');
+				return;
+      }
+			
+			// if the user response is ok, then get the userid
+			const userData = await userResponse.json();
+			console.log("USER DATA: ", userData);
+			const userid = userData.userid;
+
+			// step 3: add home location to favorite locations
+			// check if userid is found
+			if (!userid) {
 				setUsername("");
 				setFname("");
 				setLname("");
@@ -170,25 +238,68 @@ function Signup() {
 				setCity("");
 				setState("");
 				setZip("");
-        setSuccessMessage('Signup successful! Redirecting to login page...');
-				// navigate to login page after a short delay
-				setTimeout(() => {
-					handleNavigate("/");
-				}, 4000);
-      } else {
-        setUsername("");
+				fnameInputRef.current.focus();
+        setGeneralError('Failed to add hometown location');
+				return;
+			}
+
+			try {
+				// get the latitude and longitude from Google Geocoding API
+				const { latitude, longitude } = await getCoord(city, state, zip);
+
+				const favLocationsResponse = await fetch(`http://localhost:5000/favlocations/add/${userid}`, {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({ latitude, longitude, city, state, zip }),
+				});
+				// check if favorite locations response is ok
+				if (favLocationsResponse.ok) {
+					setUsername("");
+					setFname("");
+					setLname("");
+					setEmail("");
+					setPassword("");
+					setConfirmPassword("");
+					setCity("");
+					setState("");
+					setZip("");
+					setSuccessMessage('Signup successful! Redirecting to login page...');
+					// navigate to login page after a short delay
+					setTimeout(() => {
+						handleNavigate("/");
+					}, 4000);
+				} else {
+					// if favorite locations response is not ok, then delete the newly added user
+					await deleteUser(userid);
+					setUsername("");
+					setFname("");
+					setLname("");
+					setEmail("");
+					setPassword("");
+					setConfirmPassword("");
+					setCity("");
+					setState("");
+					setZip("");
+					fnameInputRef.current.focus();
+					const errorData = await favLocationsResponse.json();
+					setGeneralError('Failed to add hometown location', errorData.error);
+				}
+			} catch (locationError) {
+				await deleteUser(userid);
+				setUsername("");
 				setFname("");
 				setLname("");
 				setEmail("");
-        setPassword("");
+				setPassword("");
 				setConfirmPassword("");
 				setCity("");
 				setState("");
 				setZip("");
-				usernameInputRef.current.focus();
-        const errorData = await response.json();
-        setGeneralError(errorData.error || 'Failed to add user');
-      }
+				fnameInputRef.current.focus();
+				setGeneralError('Error adding hometown location', locationError);
+			}
     } catch (error) {
       setUsername("");
 			setFname("");
@@ -199,7 +310,7 @@ function Signup() {
 			setCity("");
 			setState("");
 			setZip("");
-			usernameInputRef.current.focus();
+			fnameInputRef.current.focus();
       setGeneralError('Error during signup', error);
     }
 	};
@@ -279,65 +390,70 @@ function Signup() {
 					</div>
 				</div>
 				<div className="form-row">
-					<div className="form-group">
-						<label htmlFor="cityInput">City:</label>
-						<input id="cityInput" type="text" placeholder="City" value={city} onChange={(e) => setCity(e.target.value)} required />
-					</div>
-					<div className="form-group form-group-narrow">
-						<label htmlFor="stateInput">State:</label>
-						<select id="stateInput" value={state} onChange={(e) => setState(e.target.value)} required ref={stateInputRef} >
-							<option value=""></option>
-							<option value="AL">AL</option>
-							<option value="AK">AK</option>
-							<option value="AZ">AZ</option>
-							<option value="AR">AR</option>
-							<option value="CA">CA</option>
-							<option value="CO">CO</option>
-							<option value="CT">CT</option>
-							<option value="DE">DE</option>
-							<option value="FL">FL</option>
-							<option value="GA">GA</option>
-							<option value="HI">HI</option>
-							<option value="ID">ID</option>
-							<option value="IL">IL</option>
-							<option value="IN">IN</option>
-							<option value="IA">IA</option>
-							<option value="KS">KS</option>
-							<option value="KY">KY</option>
-							<option value="LA">LA</option>
-							<option value="ME">ME</option>
-							<option value="MD">MD</option>
-							<option value="MA">MA</option>
-							<option value="MI">MI</option>
-							<option value="MN">MN</option>
-							<option value="MS">MS</option>
-							<option value="MO">MO</option>
-							<option value="MT">MT</option>
-							<option value="NE">NE</option>
-							<option value="NV">NV</option>
-							<option value="NH">NH</option>
-							<option value="NJ">NJ</option>
-							<option value="NM">NM</option>
-							<option value="NY">NY</option>
-							<option value="NC">NC</option>
-							<option value="ND">ND</option>
-							<option value="OH">OH</option>
-							<option value="OK">OK</option>
-							<option value="OR">OR</option>
-							<option value="PA">PA</option>
-							<option value="RI">RI</option>
-							<option value="SC">SC</option>
-							<option value="SD">SD</option>
-							<option value="TN">TN</option>
-							<option value="TX">TX</option>
-							<option value="UT">UT</option>
-							<option value="VT">VT</option>
-							<option value="VA">VA</option>
-							<option value="WA">WA</option>
-							<option value="WV">WV</option>
-							<option value="WI">WI</option>
-							<option value="WY">WY</option>
-						</select>
+					<div className="hometown-group">
+						<label htmlFor="cityInput" className="hometown-label">Hometown Location:</label>
+						<div className="hometown-inputs-row">
+							<div id="hometownLocation" className="form-group">
+								<label htmlFor="cityInput">City:</label>
+								<input id="cityInput" type="text" placeholder="City" value={city} onChange={(e) => setCity(e.target.value)} required />
+							</div>
+							<div className="form-group form-group-narrow">
+								<label htmlFor="stateInput">State:</label>
+								<select id="stateInput" value={state} onChange={(e) => setState(e.target.value)} required ref={stateInputRef} >
+									<option value=""></option>
+									<option value="AL">AL</option>
+									<option value="AK">AK</option>
+									<option value="AZ">AZ</option>
+									<option value="AR">AR</option>
+									<option value="CA">CA</option>
+									<option value="CO">CO</option>
+									<option value="CT">CT</option>
+									<option value="DE">DE</option>
+									<option value="FL">FL</option>
+									<option value="GA">GA</option>
+									<option value="HI">HI</option>
+									<option value="ID">ID</option>
+									<option value="IL">IL</option>
+									<option value="IN">IN</option>
+									<option value="IA">IA</option>
+									<option value="KS">KS</option>
+									<option value="KY">KY</option>
+									<option value="LA">LA</option>
+									<option value="ME">ME</option>
+									<option value="MD">MD</option>
+									<option value="MA">MA</option>
+									<option value="MI">MI</option>
+									<option value="MN">MN</option>
+									<option value="MS">MS</option>
+									<option value="MO">MO</option>
+									<option value="MT">MT</option>
+									<option value="NE">NE</option>
+									<option value="NV">NV</option>
+									<option value="NH">NH</option>
+									<option value="NJ">NJ</option>
+									<option value="NM">NM</option>
+									<option value="NY">NY</option>
+									<option value="NC">NC</option>
+									<option value="ND">ND</option>
+									<option value="OH">OH</option>
+									<option value="OK">OK</option>
+									<option value="OR">OR</option>
+									<option value="PA">PA</option>
+									<option value="RI">RI</option>
+									<option value="SC">SC</option>
+									<option value="SD">SD</option>
+									<option value="TN">TN</option>
+									<option value="TX">TX</option>
+									<option value="UT">UT</option>
+									<option value="VT">VT</option>
+									<option value="VA">VA</option>
+									<option value="WA">WA</option>
+									<option value="WV">WV</option>
+									<option value="WI">WI</option>
+									<option value="WY">WY</option>
+								</select>
+							</div>
+						</div>
 					</div>
 				</div>
 				<div className="form-row">

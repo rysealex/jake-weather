@@ -730,6 +730,23 @@ body {
 .form-group .password-input-container {
   width: 100%;
 }
+.hometown-group {
+  display: flex;
+  flex-direction: column;
+  flex: 1; 
+}
+.hometown-label {
+  display: block;
+  text-align: left;
+  font-weight: 600;
+  margin-bottom: 10px; 
+  color: #333; 
+}
+.hometown-inputs-row {
+  display: flex;
+  gap: 20px;
+  width: 100%;
+}
 
 /* Inputs */
 .sign-up-wrapper input {

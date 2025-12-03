@@ -27,6 +27,28 @@ body {
   min-height: 100vh;
   width: 100vw;
 } */
+.user-location-dot {
+	width: 16px;
+	height: 16px;
+	background-color: #4285F4;
+	border-radius: 50%;
+	border: 2px solid #fff;
+	box-shadow: 0 0 0 2px rgba(0,0,0,0.3);
+	animation: pulse 2s infinite;
+	position: relative;
+	transform: translate(-50%, -50%);
+}
+@keyframes pulse {
+	0% {
+		box-shadow: 0 0 0 0 rgba(66, 133, 244, 0.7);
+	}
+	70% {
+		box-shadow: 0 0 0 10px rgba(66, 133, 244, 0);
+	}
+	100% {
+		box-shadow: 0 0 0 0 rgba(66, 133, 244, 0);
+	}
+}
 
 /* TOP BAR */
 .top-bar {

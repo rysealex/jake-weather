@@ -32,6 +32,7 @@ function Signup() {
 	const [successMessage, setSuccessMessage] = useState('');
 
 	// refs for login input fields
+	const fnameInputRef = useRef(null);
 	const usernameInputRef = useRef(null);
 	const passwordInputRef = useRef(null);
 	const confirmPasswordInputRef = useRef(null);
@@ -141,10 +142,11 @@ function Signup() {
 				setLname("");
 				setEmail("");
 				setPassword("");
+				setConfirmPassword("");
 				setCity("");
 				setState("");
 				setZip("");
-				usernameInputRef.current.focus();
+				fnameInputRef.current.focus();
 				setGeneralError('User account already exists');
 				return;
 			}
@@ -210,7 +212,7 @@ function Signup() {
 				<div className="form-row">
 					<div className="form-group">
 						<label htmlFor="fnameInput">First Name:</label>
-						<input id="fnameInput" type="text" placeholder="First Name" value={fname} onChange={(e) => setFname(e.target.value)} required />
+						<input id="fnameInput" type="text" placeholder="First Name" value={fname} onChange={(e) => setFname(e.target.value)} required ref={fnameInputRef} />
 					</div>
 					<div className="form-group">
 						<label htmlFor="lnameInput">Last Name:</label>
@@ -221,7 +223,7 @@ function Signup() {
 					<div className="form-group">
 						<label htmlFor="usernameInput">Username:</label>
 						<input id="usernameInput" type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} required ref={usernameInputRef}/>
-						{usernameError && <p>{usernameError}</p>}
+						{usernameError && <p className='error-message'>{usernameError}</p>}
 					</div>
 					<div className="form-group">
 						<label htmlFor="emailInput">Email:</label>
@@ -250,7 +252,7 @@ function Signup() {
 								{isPasswordVisible ? '🔒' : '👁️'}
 							</button>
 						</div>
-						{passwordError && <p>{passwordError}</p>}
+						{passwordError && <p className='error-message'>{passwordError}</p>}
 					</div>
 					<div className="form-group">
 						<label htmlFor="confirmPasswordInput">Confirm Password:</label>
@@ -273,7 +275,7 @@ function Signup() {
 								{isConfirmPasswordVisible ? '🔒' : '👁️'}
 							</button>
 						</div>
-						{confirmPasswordError && <p>{confirmPasswordError}</p>}
+						{confirmPasswordError && <p className='error-message'>{confirmPasswordError}</p>}
 					</div>
 				</div>
 				<div className="form-row">
@@ -344,8 +346,8 @@ function Signup() {
 						<input id="zipInput" type="text" placeholder="Zip" value={zip} onChange={(e) => setZip(e.target.value)} required ref={zipInputRef}/>
 					</div>
 				</div>
-				{generalError && <p>{generalError}</p>}
-				{successMessage && <p>{successMessage}</p>}
+				{generalError && <p className='error-message'>{generalError}</p>}
+				{successMessage && <p className='success-message'>{successMessage}</p>}
 				<button id="signupButton" type="submit">Sign Up</button>
 			</form>
 		</div>

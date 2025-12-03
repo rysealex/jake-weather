@@ -119,6 +119,10 @@ function ForgotPassword() {
 
 			// check if user does not exist
 			if (!existsData.exists) {
+				setUsername("");
+				setPassword("");
+				setConfirmPassword("");
+				usernameInputRef.current.focus();
 				setGeneralError('User account does not exist');
 				return;
 			}
@@ -143,6 +147,10 @@ function ForgotPassword() {
 
 			// check if the new password is different
 			if (!diffpassData.different) {
+				setUsername("");
+				setPassword("");
+				setConfirmPassword("");
+				usernameInputRef.current.focus();
 				setGeneralError('New password must be different from the old password');
 				return;
 			}
@@ -189,7 +197,7 @@ function ForgotPassword() {
 				<h1>Forgot your password? Reset it below</h1>
 				<label htmlFor="usernameInput">Username:</label>
 				<input id='usernameInput' type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} required ref={usernameInputRef}/>
-				{usernameError && <p>{usernameError}</p>}
+				{usernameError && <p className='error-message'>{usernameError}</p>}
 				<label htmlFor="passwordInput">New Password:</label>
 				<div className="password-input-container">
 					<input 
@@ -210,7 +218,7 @@ function ForgotPassword() {
 						{isPasswordVisible ? '🔒' : '👁️'}
 					</button>
 				</div>
-				{passwordError && <p>{passwordError}</p>}
+				{passwordError && <p className='error-message'>{passwordError}</p>}
 				<label htmlFor="confirmPasswordInput">Confirm New Password:</label>
 				<div className="password-input-container">
 					<input 
@@ -231,9 +239,9 @@ function ForgotPassword() {
 						{isConfirmPasswordVisible ? '🔒' : '👁️'}
 					</button>
 				</div>
-				{confirmPasswordError && <p>{confirmPasswordError}</p>}
-				{generalError && <p>{generalError}</p>}
-				{successMessage && <p>{successMessage}</p>}
+				{confirmPasswordError && <p className='error-message'>{confirmPasswordError}</p>}
+				{generalError && <p className='error-message'>{generalError}</p>}
+				{successMessage && <p className='success-message'>{successMessage}</p>}
 				<button id='resetPasswordButton' type="submit">Reset Password</button>
 			</form>
 		</div>

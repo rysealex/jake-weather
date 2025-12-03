@@ -774,3 +774,10 @@ body {
 #signupButton:hover {
   background-color: #4267b2;
 }
+
+.success-message {
+  color: #4F8A10;
+}
+.error-message {
+  color: #D8000C;
+}

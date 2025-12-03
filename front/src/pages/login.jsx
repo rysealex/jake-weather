@@ -148,7 +148,7 @@ function Login() {
 				<h1>J.A.K.E. Weather</h1>
 				<label htmlFor="usernameInput">Username:</label>
 				<input id='usernameInput' type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} required ref={usernameInputRef} />
-				{usernameError && <p>{usernameError}</p>}
+				{usernameError && <p className='error-message'>{usernameError}</p>}
 				<label htmlFor="passwordInput">Password:</label>
 				<div className="password-input-container">
 					<input 
@@ -169,8 +169,8 @@ function Login() {
 						{isPasswordVisible ? '🔒' : '👁️'}
 					</button>
 				</div>
-				{passwordError && <p>{passwordError}</p>}
-				{generalError && <p>{generalError}</p>}
+				{passwordError && <p className='error-message'>{passwordError}</p>}
+				{generalError && <p className='error-message'>{generalError}</p>}
 				<div className="log-in-wrapper button">
 					<button class="log-in-button" type="submit">Log In</button>
 					<button class="log-in-button" type="button" onClick={handleForgotPasswordClick}>Forgot Password</button>	

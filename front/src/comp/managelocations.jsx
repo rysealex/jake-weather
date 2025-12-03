@@ -321,7 +321,7 @@ function Managelocations({ isOpen, onClose, onRefresh }) {
 							<form onSubmit={handleSaveLocation}>
 								<label htmlFor="cityInput">City:</label>
 								<input id="cityInput" type="text" value={city} onChange={(e) => setCity(e.target.value)} required ref={cityInputRef} />
-								{cityError && <p className="error">{cityError}</p>}
+								{cityError && <p className='error-message'>{cityError}</p>}
 								<label htmlFor="stateInput">State:</label>
 								<select id="stateInput" value={state} onChange={(e) => setState(e.target.value)} required ref={stateInputRef} >
 									<option value=""></option>
@@ -376,12 +376,12 @@ function Managelocations({ isOpen, onClose, onRefresh }) {
 									<option value="WI">WI</option>
 									<option value="WY">WY</option>
 								</select>
-								{stateError && <p className="error">{stateError}</p>}
+								{stateError && <p className='error-message'>{stateError}</p>}
 								<label htmlFor="zipInput">Zip:</label>
 								<input id="zipInput" type="text" value={zip} onChange={(e) => setZip(e.target.value)} required ref={zipInputRef} />
-								{zipError && <p className="error">{zipError}</p>}
-								{generalError && <p className="error">{generalError}</p>}
-								{successMessage && <p className="success">{successMessage}</p>}
+								{zipError && <p className='error-message'>{zipError}</p>}
+								{generalError && <p className='error-message'>{generalError}</p>}
+								{successMessage && <p className="success-message">{successMessage}</p>}
 								<div className="modal-footer">
 									<button id="saveBtn" type="submit">Save</button>
 									<button id="closeBtn" type="button" onClick={handleDeleteLocation}>Delete</button>

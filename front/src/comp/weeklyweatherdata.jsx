@@ -54,7 +54,7 @@ const fetchCity = async (latitude, longitude) => {
 
 		return city;
 	} catch(error) {
-		console.error("Error fetching city from Google Geoding API:", error);
+		alert("Error fetching city from Google Geoding API:", error);
 		return "Unknown Location";
 	}
 };
@@ -81,7 +81,6 @@ function Weeklyweatherdata({ latitude, longitude, onIconUpdate, onCityUpdate }) 
 					if (response.ok) {
 						const data = await response.json();
 						setWeeklyWeatherData(data);
-						console.log('Weather Data:', data);
 						// store current day weather icon in local storage
 						const currentDayWeather = data?.weekly?.[0];
 						if (currentDayWeather) {
@@ -95,10 +94,10 @@ function Weeklyweatherdata({ latitude, longitude, onIconUpdate, onCityUpdate }) 
 						if (onCityUpdate) onCityUpdate(selectedCity);
 					} else {
 						const errorData = await response.json();
-						console.error('Error fetching weather data:', errorData);
+						alert('Error fetching weather data:', errorData);
 					}
 				} catch (error) {
-					console.error('Error during fetching weather data:', error);
+					alert('Error during fetching weather data:', error);
 				}
 			}
 		};		
@@ -118,7 +117,6 @@ function Weeklyweatherdata({ latitude, longitude, onIconUpdate, onCityUpdate }) 
 					const { icon, description } = getWeatherIcon(day.weather_code);
 					const dayName = formatDay(day.date);
 					const temperature = Math.round(day.temperature_2m);
-
 					return (
 						<div key={index} className='card'>
 							<h3>{dayName}</h3>

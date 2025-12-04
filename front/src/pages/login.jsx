@@ -12,9 +12,8 @@ function Login() {
 	const [username, setUsername] = useState('');
 	const [password, setPassword] = useState('');
 
-	// useState hooks for password and confirm password visibility
+	// useState hooks for password visibility
 	const [isPasswordVisible, setIsPasswordVisible] = useState(false);
-	const [isConfirmPasswordVisible, setIsConfirmPasswordVisible] = useState(false);
 	
 	// useState hooks for error handling
 	const [usernameError, setUsernameError] = useState('');
@@ -118,7 +117,6 @@ function Login() {
 				setUsername("");
         setPassword("");
         const userid = await response.json();
-        console.log('Login successful:', userid);
         // store the user id in local storage
         localStorage.setItem('userid', userid.userid);
 				// navigate to login page

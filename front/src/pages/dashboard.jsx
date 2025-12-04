@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Managelocations from '../comp/managelocations';
 import Weathermap from '../comp/weathermap';
 import Weeklyweatherdata from '../comp/weeklyweatherdata';
@@ -17,6 +18,10 @@ const LAYER_OPTIONS = [
 ]
 
 function Dashboard() {
+	const navigate = useNavigate();
+  const handleNavigate = (url) => {
+    navigate(url);
+  };
 
 	// useState hook for user information
 	const [userInfo, setUserInfo] = useState([]);
@@ -61,8 +66,7 @@ function Dashboard() {
 			
 			if (!userid) {
 				// if no userid, navigate to login page
-				console.log('No userid found');
-				return;
+				handleNavigate('/');
 			}
 			// proceed to fetch user data with API calls
 			try {
@@ -75,26 +79,28 @@ function Dashboard() {
 				// check if the response is ok
 				if (response.ok) {
 					const userData = await response.json();
-					console.log('User data:', userData);
 					setUserInfo(userData);
 				} else {
 					const errorData = await response.json();
-					console.log('User data fetch failed:', errorData.error);
+					alert('User data fetch failed:', errorData.error);
 				}
 			} catch (error) {
-				console.error('Error fetching user data:', error);
+				alert('Error fetching user data:', error);
 			}
 
 		};
 		fetchUserData();
+
 		// get the latitude and longitude from local storage (convert to numbers when present)
 		const storedLat = localStorage.getItem('latitude');
 		const storedLng = localStorage.getItem('longitude');
 		if (storedLat) setLatitude(Number(storedLat));
 		if (storedLng) setLongitude(Number(storedLng));
+
 		// get the current day weather icon from local storage
 		const storedCurrentDayWeatherIcon = localStorage.getItem('currentDayWeatherIcon');
 		if (storedCurrentDayWeatherIcon) setCurrentDayWeatherIcon(storedCurrentDayWeatherIcon);
+		
 		// get the selected city from local storage
 		const storedSelectedCity = localStorage.getItem('selectedCity');
 		if (storedSelectedCity) setSelectedCity(storedSelectedCity);

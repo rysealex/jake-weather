@@ -91,7 +91,6 @@ function Managelocations({ isOpen, onClose, onRefresh }) {
 			// check if status is ok and latitude and longitude returned
 			if (data.status === 'OK' && data.results.length > 0) {
 				const location = data.results[0].geometry.location;
-				console.log(`Latitude: ${location.lat}, Longitude: ${location.lng}`);
 				return {
 					latitude: location.lat,
 					longitude: location.lng
@@ -314,8 +313,6 @@ function Managelocations({ isOpen, onClose, onRefresh }) {
 				setTimeout(() => {
 					setSuccessMessage('');
 				}, 4000);
-				const deleteData = await deleteResponse.json();
-				console.log('Favorite location deleted successfully:', deleteData);
 			} else {
 				const errorData = await deleteResponse.json();
 				setGeneralError(errorData.error || 'Failed to delete favorite location');

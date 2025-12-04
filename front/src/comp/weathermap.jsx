@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { APIProvider, Map, AdvancedMarker, useMap } from '@vis.gl/react-google-maps';
 import Openweatherlayer from './openweatherlayer.jsx';
 
@@ -8,7 +8,6 @@ function MapController({ onMapLoad }) {
 
 	useEffect(() => {
 		if (map) {
-			console.log("REAL MAP INSTANCE:", map);
 			onMapLoad(map);
 	}
 	}, [map]);
@@ -21,9 +20,6 @@ function Weathermap({ className, activeLayer, onMapLoad, centerLat, centerLng, o
 	// useState hooks for geolocation
 	const [userPos, setUserPos] = useState(null);
 	const [geolocationError, setGeolocationError] = useState(null);
-
-	const mapRef = useRef(null);
-	const lastCenterRef = useRef(null);
 
 	// useEffect to fetch user's geolocation
 	useEffect(() => {
@@ -51,23 +47,6 @@ function Weathermap({ className, activeLayer, onMapLoad, centerLat, centerLng, o
 			setGeolocationError('Geolocation is not supported by this browser');
 		}
 	}, []);
-
-	// when parent provides centerLat/centerLng, center the map if available
-	// only update if the coordinates have actually changed to avoid jitter from user dragging
-	// useEffect(() => {
-	// 	if (mapRef.current && centerLat != null && centerLng != null) {
-	// 		const newCenter = `${centerLat},${centerLng}`;
-	// 		if (lastCenterRef.current !== newCenter) {
-	// 			console.log(`[Weathermap] Moving map to: ${centerLat}, ${centerLng}`);
-	// 			try {
-	// 				mapRef.current.setCenter({ lat: Number(centerLat), lng: Number(centerLng) });
-	// 				lastCenterRef.current = newCenter;
-	// 			} catch (e) {
-	// 				console.warn('[Weathermap] failed to set center:', e);
-	// 			}
-	// 		}
-	// 	}
-	// }, [centerLat, centerLng]);
 
 	// calculate the effective center for the map
 	const effectiveCenter = 

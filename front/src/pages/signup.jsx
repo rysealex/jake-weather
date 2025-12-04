@@ -67,7 +67,6 @@ function Signup() {
 			// check if status is ok and latitude and longitude returned
 			if (data.status === 'OK' && data.results.length > 0) {
 				const location = data.results[0].geometry.location;
-				console.log(`Latitude: ${location.lat}, Longitude: ${location.lng}`);
 				return {
 					latitude: location.lat,
 					longitude: location.lng

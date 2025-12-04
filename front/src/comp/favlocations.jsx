@@ -1,7 +1,12 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import '../index.css';
 
 function Favlocations({ onLocationSelect, refreshTrigger, onFavCountUpdate, clearSelectionTrigger }) {
+	const navigate = useNavigate();
+  const handleNavigate = (url) => {
+    navigate(url);
+  };
 
 	// useState hook for favorite locations
 	const [favlocations, setFavlocations] = useState([]);
@@ -29,8 +34,7 @@ function Favlocations({ onLocationSelect, refreshTrigger, onFavCountUpdate, clea
 
 		if (!userid) {
 			// if no userid, navigate to login page
-			console.log('No userid found');
-			return;
+			handleNavigate('/');
 		}
 
 		// proceed to fetch favorite locations with API calls
@@ -44,7 +48,6 @@ function Favlocations({ onLocationSelect, refreshTrigger, onFavCountUpdate, clea
 			// check if the response is ok
 			if (response.ok) {
 				const favlocationsData = await response.json();
-				console.log('Favorite locations:', favlocationsData);
 				// mark the first favorite location as the hometown location
 				const favlocationsWithHometown = favlocationsData.map((location, index) => ({
 					...location,
@@ -57,10 +60,10 @@ function Favlocations({ onLocationSelect, refreshTrigger, onFavCountUpdate, clea
         }
 			} else {
 				const errorData = await response.json();
-				console.log('Favorite locations fetch failed:', errorData.error);
+				alert('Favorite locations fetch failed:', errorData.error);
 			}
 		} catch (error) {
-			console.error('Error fetching favorite locations:', error);
+			alert('Error fetching favorite locations:', error);
 		}
 	};
 

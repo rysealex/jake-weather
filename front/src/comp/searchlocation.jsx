@@ -11,7 +11,6 @@ const Searchlocation = ({ map, onSelectLocation }) => {
   const placesServiceRef = useRef(null);
 
   // useEffect to initialize the autocomplete and PlacesService on component mount
-  // The Maps + Places library may load after this component mounts, so poll briefly
   useEffect(() => {
     let mounted = true;
     let pollTimer = null;
@@ -43,8 +42,6 @@ const Searchlocation = ({ map, onSelectLocation }) => {
           if (inputRef.current) inputRef.current.value = "";
           handlePlaceResult(place);
         });
-
-        console.log('[Searchlocation] Autocomplete initialized');
         return true;
       } catch (e) {
         console.error('[Searchlocation] autocomplete init error:', e);
@@ -52,9 +49,9 @@ const Searchlocation = ({ map, onSelectLocation }) => {
       }
     };
 
-    // First try immediate init
+    // first try immediate init
     if (!initWhenReady()) {
-      // poll up to ~3 seconds for the library to load
+      // poll up to 3 seconds for the library to load
       const start = Date.now();
       pollTimer = setInterval(() => {
         if (initWhenReady() || Date.now() - start > 3000) {
@@ -82,21 +79,14 @@ const Searchlocation = ({ map, onSelectLocation }) => {
     localStorage.removeItem("modalCity");
 
     if (map && place.geometry && place.geometry.location) {
-      // // center the map on the selected place
-      // map.setCenter(place.geometry.location);
-      // map.setZoom(8);
-      // // update the input field with the place name
-      // inputRef.current.value = place.name;
-      // // notify parent about selected coordinates
       try {
         const lat = typeof place.geometry.location.lat === 'function' ? place.geometry.location.lat() : place.geometry.location.lat;
         const lng = typeof place.geometry.location.lng === 'function' ? place.geometry.location.lng() : place.geometry.location.lng;
         if (onSelectLocation) onSelectLocation(lat, lng);
       } catch (e) {
-        console.error("[Searchlocation] Error getting/sending lat/lng:", e);
+        alert("[Searchlocation] Error getting/sending lat/lng:", e);
       }
     } else if (place.name) {
-      console.log(`Place found: ${place.name}, but no geometry. Attempting geocode fallback.`);
       // fallback: use Geocoder to resolve the place name to coordinates
       if (window.google && window.google.maps && window.google.maps.Geocoder) {
         const geocoder = new window.google.maps.Geocoder();
@@ -114,16 +104,15 @@ const Searchlocation = ({ map, onSelectLocation }) => {
               const lng = typeof loc.lng === 'function' ? loc.lng() : loc.lng;
               if (onSelectLocation) onSelectLocation(lat, lng);
             } catch (e) {}
-            console.log('[Searchlocation] Geocode fallback succeeded for', place.name, loc);
           } else {
-            console.warn('[Searchlocation] Geocode fallback failed for', place.name, status);
+            alert('[Searchlocation] Geocode fallback failed for', place.name, status);
           }
         });
       } else {
-        console.warn('[Searchlocation] Geocoder not available to resolve', place.name);
+        alert('[Searchlocation] Geocoder not available to resolve', place.name);
       }
     } else {
-      console.log("No details available for the selected place.");
+      alert("No details available for the selected place.");
     }
   };
 
@@ -142,7 +131,7 @@ const Searchlocation = ({ map, onSelectLocation }) => {
         const place = results[0]; 
         handlePlaceResult(place);
       } else {
-        console.error('Places search failed or returned no results:', status);
+        alert('Places search failed or returned no results:', status);
       }
     });
   };

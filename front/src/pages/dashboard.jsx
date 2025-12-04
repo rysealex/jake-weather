@@ -136,6 +136,10 @@ function Dashboard() {
 						localStorage.setItem('latitude', lat);
 						localStorage.setItem('longitude', lng);
 						setClearFavSelection(prev => prev + 1);
+						if (mapInstance) {
+							mapInstance.setCenter({ lat, lng });
+							mapInstance.setZoom(8);
+						}
 					}}
 				/>
 			</div>
@@ -195,9 +199,15 @@ function Dashboard() {
 					 	refreshTrigger={favRefreshTrigger}
 						clearSelectionTrigger={clearFavSelection}
 						onLocationSelect={(location) => {
-							setLatitude(location.latitude);
-							setLongitude(location.longitude);
+							const lat = Number(location.latitude);
+        			const lng = Number(location.longitude);
+							setLatitude(lat);
+							setLongitude(lng);
 							setSelectedCity(location.city);
+							if (mapInstance) {
+								mapInstance.setCenter({ lat, lng });
+								mapInstance.setZoom(8);
+							}
 						}}
 					/>
 					<div className="footer">J.A.K.E. Weather © 2025</div>

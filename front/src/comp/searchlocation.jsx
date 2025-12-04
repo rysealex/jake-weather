@@ -84,7 +84,7 @@ const Searchlocation = ({ map, onSelectLocation }) => {
     if (map && place.geometry && place.geometry.location) {
       // // center the map on the selected place
       // map.setCenter(place.geometry.location);
-      // map.setZoom(15);
+      // map.setZoom(8);
       // // update the input field with the place name
       // inputRef.current.value = place.name;
       // // notify parent about selected coordinates
@@ -92,7 +92,9 @@ const Searchlocation = ({ map, onSelectLocation }) => {
         const lat = typeof place.geometry.location.lat === 'function' ? place.geometry.location.lat() : place.geometry.location.lat;
         const lng = typeof place.geometry.location.lng === 'function' ? place.geometry.location.lng() : place.geometry.location.lng;
         if (onSelectLocation) onSelectLocation(lat, lng);
-      } catch (e) {}
+      } catch (e) {
+        console.error("[Searchlocation] Error getting/sending lat/lng:", e);
+      }
     } else if (place.name) {
       console.log(`Place found: ${place.name}, but no geometry. Attempting geocode fallback.`);
       // fallback: use Geocoder to resolve the place name to coordinates
@@ -101,10 +103,10 @@ const Searchlocation = ({ map, onSelectLocation }) => {
         geocoder.geocode({ address: place.name }, (results, status) => {
           if (status === window.google.maps.GeocoderStatus.OK && results && results[0] && results[0].geometry && results[0].geometry.location) {
             const loc = results[0].geometry.location;
-            // if (map) {
-            //   map.setCenter(loc);
-            //   map.setZoom(15);
-            // }
+            if (map) {
+              map.setCenter(loc);
+              map.setZoom(8);
+            }
             inputRef.current.value = place.name;
             // notify parent about selected coordinates
             try {

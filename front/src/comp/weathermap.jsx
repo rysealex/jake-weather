@@ -49,6 +49,12 @@ function Weathermap({ className, activeLayer, onMapLoad, centerLat, centerLng, o
 		}
 	}, [centerLat, centerLng]);
 
+	// calculate the effective center for the map
+	const effectiveCenter = 
+		(centerLat != null && centerLng != null)
+			? { lat: Number(centerLat), lng: Number(centerLng) } // use search location if available
+			: userPos ?? { lat: 39.5, lng: -98.35 }; // fall back to user or default
+
 	return(
 		<div className={className}>
 			{geolocationError && (
@@ -61,10 +67,15 @@ function Weathermap({ className, activeLayer, onMapLoad, centerLat, centerLng, o
 				libraries={['places']}
 			>
 				<Map
-					defaultCenter={userPos ?? { lat: 39.5, lng: -98.35 }}
-					defaultZoom={userPos ? 6 : 4}
+					center={effectiveCenter}
+					defaultZoom={userPos ? 8 : 4}
 					mapId={process.env.REACT_APP_GOOGLE_MAPS_MAP_ID}
 					disableDefaultUI={true}
+					gestureHandling="greedy"
+					// mapTypeControl={false}
+					// streetViewControl={false}
+					// zoomControl={false}
+					// fullScreenControl={false}
 					onLoad={(mapArg) => {
 						const map = mapArg.map;
 						if (map) {

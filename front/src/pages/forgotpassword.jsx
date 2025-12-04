@@ -242,7 +242,7 @@ function ForgotPassword() {
 				{confirmPasswordError && <p className='error-message'>{confirmPasswordError}</p>}
 				{generalError && <p className='error-message'>{generalError}</p>}
 				{successMessage && <p className='success-message'>{successMessage}</p>}
-				<button id='resetPasswordButton' type="submit">Reset Password</button>
+				<button id='signupButton' type="submit">Reset Password</button>
 			</form>
 		</div>
 	);

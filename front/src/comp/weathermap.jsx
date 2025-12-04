@@ -62,7 +62,7 @@ function Weathermap({ className, activeLayer, onMapLoad, centerLat, centerLng, o
 			>
 				<Map
 					defaultCenter={userPos ?? { lat: 39.5, lng: -98.35 }}
-					defaultZoom={userPos ? 15 : 4}
+					defaultZoom={userPos ? 6 : 4}
 					mapId={process.env.REACT_APP_GOOGLE_MAPS_MAP_ID}
 					disableDefaultUI={true}
 					onLoad={(mapArg) => {

@@ -45,10 +45,15 @@ function Favlocations({ onLocationSelect, refreshTrigger, onFavCountUpdate, clea
 			if (response.ok) {
 				const favlocationsData = await response.json();
 				console.log('Favorite locations:', favlocationsData);
-				setFavlocations(favlocationsData);
+				// mark the first favorite location as the hometown location
+				const favlocationsWithHometown = favlocationsData.map((location, index) => ({
+					...location,
+					isHometown: index === 0,
+				}));
+				setFavlocations(favlocationsWithHometown);
 				// update the current number of favorite locations
 				if (onFavCountUpdate) {
-          onFavCountUpdate(favlocationsData.length);
+          onFavCountUpdate(favlocationsWithHometown.length);
         }
 			} else {
 				const errorData = await response.json();
@@ -75,7 +80,9 @@ function Favlocations({ onLocationSelect, refreshTrigger, onFavCountUpdate, clea
 	useEffect(() => {
 		// un-select the currently selected location on search location trigger
 		setSelectedLocation(null);
-		
+		// remove the locationid from local storage
+		localStorage.removeItem('locationid');
+
 	}, [clearSelectionTrigger]);
 
   return(
@@ -90,6 +97,7 @@ function Favlocations({ onLocationSelect, refreshTrigger, onFavCountUpdate, clea
 							onClick={() => handleLocationClick(location)}
 						>
 							{location.city}, {location.state}
+							{location.isHometown && <span className="hometown-location-span">Hometown Location</span>}
 						</button>
 					))
 				) : (

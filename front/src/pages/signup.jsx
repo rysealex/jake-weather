@@ -223,7 +223,6 @@ function Signup() {
 			
 			// if the user response is ok, then get the userid
 			const userData = await userResponse.json();
-			console.log("USER DATA: ", userData);
 			const userid = userData.userid;
 
 			// step 3: add home location to favorite locations

@@ -32,9 +32,6 @@ function Login() {
 	const togglePasswordVisibility = () => {
     setIsPasswordVisible(!isPasswordVisible);
   };
-  const toggleConfirmPasswordVisibility = () => {
-    setIsConfirmPasswordVisible(!isConfirmPasswordVisible);
-  };
 
 	// useEffect to remove all data in local storage on component mount
 	useEffect(() => {

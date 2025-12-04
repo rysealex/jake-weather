@@ -10,6 +10,12 @@ function Managelocations({ isOpen, onClose, onRefresh }) {
 	// useState hook for current number of favorite locations
 	const [currentFavCount, setCurrentFavCount] = useState(0);
 
+	// useState hook to store the currently selected full location object
+  const [currentSelectedLocation, setCurrentSelectedLocation] = useState(null);
+
+	// useState hook to clear the selected location
+	const [clearSelectionTrigger, setClearSelectionTrigger] = useState(0);
+
 	// useState hooks for manage locations inputs
 	const [city, setCity] = useState('');
 	const [state, setState] = useState('');
@@ -106,6 +112,9 @@ function Managelocations({ isOpen, onClose, onRefresh }) {
     setZipError("");
     setGeneralError("");
     setSuccessMessage("");
+
+		// set the currently selected location
+		setCurrentSelectedLocation(location);
     
     // update the managelocations state
     setCity(location.city);
@@ -273,6 +282,12 @@ function Managelocations({ isOpen, onClose, onRefresh }) {
 			return;
 		}
 
+		// prevent the deletion of the hometown location
+		if (currentSelectedLocation && currentSelectedLocation.isHometown) {
+			setGeneralError("The hometown location cannot be deleted");
+			return;
+		}
+
 		// proceed to delete location with API calls
 		try {
 			const deleteResponse = await fetch(`http://localhost:5000/favlocations/delete/${locationid}`, {
@@ -286,6 +301,8 @@ function Managelocations({ isOpen, onClose, onRefresh }) {
 				setCity('');
         setState('');
         setZip('');
+				// reset the currently selected location
+				setCurrentSelectedLocation(null);
 				// trigger the refresh
 				if (onRefresh) onRefresh();
 				// trigger the favlocations component fetch refresh after successful delete
@@ -312,7 +329,12 @@ function Managelocations({ isOpen, onClose, onRefresh }) {
 		<div className="modal" id="modal">
 			<div className="modal-content" role="dialog" aria-modal="true" aria-labelledby="manageTitle">
 				<div className="locations-list" id="locationList">
-					<Favlocations onLocationSelect={handleLocationSelect} refreshTrigger={refreshTrigger} onFavCountUpdate={setCurrentFavCount} />
+					<Favlocations 
+						onLocationSelect={handleLocationSelect} 
+						refreshTrigger={refreshTrigger} 
+						onFavCountUpdate={setCurrentFavCount} 
+						clearSelectionTrigger={clearSelectionTrigger}
+					/>
 				</div>
 				<div className="location-details">
 					<div>

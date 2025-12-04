@@ -273,6 +273,7 @@ body {
 }
 .favorite-item.selected {
   background: #e0ebff;
+  border-left: 3px solid #f4c532;
 }
 .favorite-item:hover {
   background: #f1f3f6;
@@ -729,6 +730,9 @@ body {
 }
 .form-group .password-input-container {
   width: 100%;
+}
+.hometown-location-span {
+  color: #333;
 }
 .hometown-group {
   display: flex;

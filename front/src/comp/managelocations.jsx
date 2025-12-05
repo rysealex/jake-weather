@@ -402,8 +402,8 @@ function Managelocations({ isOpen, onClose, onRefresh }) {
 								{generalError && <p className='error-message'>{generalError}</p>}
 								{successMessage && <p className="success-message">{successMessage}</p>}
 								<div className="modal-footer">
-									<button id="saveBtn" type="submit">Save</button>
-									<button id="closeBtn" type="button" onClick={handleDeleteLocation}>Delete</button>
+									<button id="saveBtn" type="submit">💾 Save</button>
+									<button id="closeBtn" type="button" onClick={handleDeleteLocation}>🗑️ Delete</button>
 								</div>
 							</form>
 						</div>

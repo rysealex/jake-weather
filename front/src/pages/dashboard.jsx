@@ -162,7 +162,7 @@ function Dashboard() {
 								id="manageBtn" 
 								onClick={toggleManageLocations}
 							> 
-								Add/Remove 
+								Add/Edit/Delete 
 							</button>
 						</div>
 					</div>

@@ -3,14 +3,17 @@
 ## 📄 Overview
 **J.A.K.E. Weather** is a full-stack weather platform built to be the reliable, accurate, and customizable weather source for users across the United States of America. Developed with the Software Development Life Cycle (SDLC) and documented using Microsoft Visio and Project, this app showcases robust architecture and professional development practices.
 
-- **Frontend:** React.js
-- **Backend:** Python Flask
-- **Database:** MySQL
-- **Containerization:** Docker
-- **APIs:** Google Maps API (Geocoding, Places, and Maps JavaScript), OpenWeather, and Open-Meteo
-- **Version Control:** Git and GitHub
-- **Task Management:** Notion
-- **Documentation:** Microsoft Visio, Microsoft Project
+### 🛠️ Tech Stack
+<p align="center">
+    <img src="https://img.shields.io/badge/React-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" />
+    <img src="https://img.shields.io/badge/Flask-000000?style=for-the-badge&logo=flask&logoColor=white" />
+    <img src="https://img.shields.io/badge/MySQL-005C84?style=for-the-badge&logo=mysql&logoColor=white" />
+    <img src="https://img.shields.io/badge/Docker-2CA5E0?style=for-the-badge&logo=docker&logoColor=white" />
+    <img src="https://img.shields.io/badge/Notion-000000?style=for-the-badge&logo=notion&logoColor=white" />
+</p>
+
+* **APIs:** Google Maps API (Geocoding, Places, and Maps JavaScript), OpenWeather, and Open-Meteo
+* **Documentation:** Microsoft Visio, Microsoft Project
 
 ---
 

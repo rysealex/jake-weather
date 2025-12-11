@@ -17,22 +17,29 @@
 ## 🚀 Key Features
 
 ### 🌞 Real-time 7 Day Forecast
-- Weather data
+- Accurate, up-to-the-hour weather data.
+- Detailed 7-day outlook for any specified location.
 
 ### 🗺️ Dynamic Weather Map
-- Displays current location.
-- Supports interaction capabilities (zooming, panning, etc.).
+- Interactive map interface powered by the Google Maps API.
+- Automatically pinpoints the user's current location.
+- Supports standard map controls (zooming, panning).
+
+### 🎛️ Customizable Map Overlay
+- Toggle between Geographical, Wind Speed, Precipitation, and Temperature map types.
+- Updates the weather map in real-time, functioning like an interactive radar for deep weather analysis.
 
 ### 🔒 Secure User Authentication
 - Password encryption and secure credential handling.
-- Password reset feature.
+- Password reset feature for account recovery.
 
 ### ⭐ Personalized Experience
-- List of favorite locations.
-- Manage favorite locations.
+- Add, edit, and delete a personalized list of favorite locations.
+- Real-time favorite locations management updates for a swift, tailored experience.
 
 ### 🔎 Searching Locations
-- Search by city, state, address, or generic place name.
+- Advanced location search using the Google Maps Geocoding and Places APIs.
+- Ensures maximum flexibility for searches: city, state, address, or generic place name.
 
 ### 🐳 Docker Containerization
 - Entire application runs in isolated containers for consistent deployment and local development.
@@ -60,7 +67,7 @@ Covers the overall design structure including a component diagram, activity diag
 <img src="./documentation/design-document/System Component Diagram.png" alt="Component Diagram" width="800"/>
 
 #### Activity Diagram (Controller Output)
-<img src="./documentation/design-document/Controller Output Activity Diagram.png" alt="Component Diagram" width="800"/>
+<img src="./documentation/design-document/Controller Output Activity Diagram.png" alt="Component Diagram" width="600"/>
 
 ### 📝 Test Plan
 Details all test cases for verifying system functionality and a defect management plan for the project located in the **/documentation/test-plan** folder.
@@ -76,3 +83,108 @@ Final PowerPoint presentation available in the **/documentation/presentation** f
 
 ### 📂 Full Documentation
 You can explore all diagrams, documents, and files in the **/documentation** folder of this repository.
+
+---
+
+## 🛠️ Local Setup Instructions
+
+### ✅ Prerequisites
+To run J.A.K.E. Weather locally, please ensure the following tools are installed and operational:
+- [Docker Desktop](https://www.docker.com/products/docker-desktop) (installed and running)
+- [Git](https://git-scm.com/)
+- [Make](https://www.gnu.org/software/make/)
+
+### 1. Clone the Repository
+Open your terminal and clone the project repository, then navigate into the root directory.
+```bash
+git clone https://github.com/your-username/jake-weather.git
+cd jake-weather
+```
+### 2. Configure Environment Variables
+You need to create two separate environment files (.env) for the front (React) and the back (Flask). Note: Do not commit these files to GitHub!
+
+#### A. Front (front/.env)
+Obtain your free API keys for Google Maps and Open Weather Map. You will need to enable the Geocoding, Places, and Maps JavaScript APIs in the Google Cloud Console.
+```bash
+# Google Maps API Key
+REACT_APP_GOOGLE_MAPS_API_KEY=your_api_key_here
+
+# Google Maps Map ID (Optional: use provided ID or your own)
+REACT_APP_GOOGLE_MAPS_MAP_ID=98f0afe81f205b4a5a9c1d45
+
+# Open Weather Map API Key
+REACT_APP_OPENWEATHER_API_KEY=your_api_key_here
+```
+
+#### B. Back (jake-weather/.env)
+Configure the credentials for your MySQL database. If using Docker Compose (recommended), the default settings below should work if you only change the passwords.
+```bash
+# MySQL Database Configuration (Change only passwords)
+MYSQL_ROOT_PASSWORD=your_mysql_root_password
+MYSQL_DATABASE=jake_weather
+MYSQL_USER=root
+MYSQL_PASSWORD=your_mysql_password
+
+# Backend Application Database Connection
+# If running with 'make run', DATABASE_HOST should be the database service name (e.g., 'db')
+DATABASE_HOST=db 
+DATABASE_PORT=3306
+DATABASE_USER=${MYSQL_USER}
+DATABASE_PASSWORD=${MYSQL_PASSWORD}
+DATABASE_NAME=${MYSQL_DATABASE}
+
+# Backend Application Configuration (Leave as is for local dev)
+FLASK_APP=app.py
+FLASK_ENV=development
+
+# Open-Meteo URL (Leave as is for local dev)
+OPEN_METEO_URL=https://api.open-meteo.com/v1/forecast
+```
+
+### 3. Run the Application
+Ensure Docker Desktop is actively running before executing the run command. This will build the images, start the containers, and set up the database.
+```bash
+make run
+```
+Once the containers are successfully running, open your browser and navigate to the application:
+http://localhost:3000
+
+### 4. Stop and Clean Up
+To cleanly shut down the application and remove the containers:
+- To Stop: Press Ctrl + C in the terminal where the application is running.
+- To Clean Up: Run the following command from the root project directory:
+```bash
+make clean
+```
+
+---
+
+## 📱 Usage Guide
+### 1. Register: Create a secure user account.
+
+### 2. Login: Log in with your credentials.
+
+### 3. Explore:
+
+- View the real-time 7-day forecast for your specified location.
+
+- Use the search bar to find weather for any city, address, or location.
+
+- Toggle different map overlays (Wind, Precipitation, Temp) on the dynamic weather map.
+
+- Save and manage your favorite locations for quick access.
+
+---
+
+## 👨‍💻 Developers
+
+- [Alex Ryse](https://github.com/rysealex)
+
+- [Jaewon Heo](https://github.com/jae1Heo)
+
+- [Katelyn Wildermuth](https://github.com/Wildermuthk)
+
+- [Eva Santana](https://github.com/AyvaWright)
+
+Students at Central Washington University
+
